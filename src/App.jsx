@@ -176,7 +176,8 @@ function TopNav({ currentIdx, total, phase, onShowAll }) {
   return (
     <nav className={`top-nav phase-${phase}`}>
       <span className="page-counter">
-        Page {currentIdx + 1}/{total}
+        <span className="counter-label">Page</span>
+        <span className="counter-num">{currentIdx + 1}/{total}</span>
       </span>
       <button className="all-pages-btn" onClick={onShowAll}>
         Toute les pages
