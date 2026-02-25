@@ -239,31 +239,34 @@ function ColorGridLine({ words }) {
 // ── Page Content with typewriter reveal ────────────────────────
 function PageContent({ page, isActive }) {
   const [revealedChars, setRevealedChars] = useState(0)
-  const [headerRevealed, setHeaderRevealed] = useState(false)
   const timersRef = useRef([])
   const intervalRef = useRef(null)
+
+  // Date → Titre → Lignes — compteur unifié
+  const dateLength  = page.displayDate ? page.displayDate.length : 0
+  const titleLength = page.title.length
 
   // Virtual length per line (empty lines = 1 so cursor flows through)
   const lineLengths = page.lines.map(l =>
     typeof l === 'object' ? 1 : l === '' ? 1 : l.length
   )
-  const totalChars = lineLengths.reduce((a, b) => a + b, 0)
+  const totalLineChars = lineLengths.reduce((a, b) => a + b, 0)
   const lineOffsets = lineLengths.reduce((acc, _, i) => {
     acc.push(i === 0 ? 0 : acc[i - 1] + lineLengths[i - 1])
     return acc
   }, [])
+
+  const totalChars = dateLength + titleLength + totalLineChars
 
   useEffect(() => {
     timersRef.current.forEach(clearTimeout)
     timersRef.current = []
     clearInterval(intervalRef.current)
     setRevealedChars(0)
-    setHeaderRevealed(false)
 
     if (!isActive) return
 
     const t0 = setTimeout(() => {
-      setHeaderRevealed(true)
       let count = 0
       intervalRef.current = setInterval(() => {
         count++
@@ -282,18 +285,35 @@ function PageContent({ page, isActive }) {
 
   const allRevealed = revealedChars >= totalChars
 
+  // Portion date
+  const dateCharsRevealed  = Math.min(revealedChars, dateLength)
+  const dateTyping         = revealedChars > 0 && revealedChars < dateLength
+
+  // Portion titre (commence après la date)
+  const titleCharsRevealed = Math.min(Math.max(0, revealedChars - dateLength), titleLength)
+  const titleTyping        = revealedChars > dateLength && revealedChars < dateLength + titleLength
+
+  // Portion lignes (commence après la date + le titre)
+  const linesCharsRevealed = Math.max(0, revealedChars - dateLength - titleLength)
+
   return (
     <div className={`page-content phase-${page.phase}`}>
       {page.displayDate && (
-        <div className={`date-stamp${headerRevealed ? ' revealed' : ''}`}>
-          {page.displayDate}
+        <div className="date-stamp">
+          {page.displayDate.slice(0, dateCharsRevealed)}
+          {dateTyping && page.phase !== 'intro' && (
+            <span className="cursor cursor--typing">█</span>
+          )}
         </div>
       )}
-      <h1 className={`page-title${headerRevealed ? ' revealed' : ''}`}>
-        {page.title}
+      <h1 className="page-title">
+        {page.title.slice(0, titleCharsRevealed)}
+        {titleTyping && page.phase !== 'intro' && (
+          <span className="cursor cursor--typing">█</span>
+        )}
       </h1>
       {page.subtitle && (
-        <h2 className={`page-subtitle${headerRevealed ? ' revealed' : ''}`}>
+        <h2 className="page-subtitle">
           {page.subtitle}
         </h2>
       )}
@@ -302,9 +322,9 @@ function PageContent({ page, isActive }) {
         {page.lines.map((line, i) => {
           const offset = lineOffsets[i]
           const len = lineLengths[i]
-          const charsIn = Math.max(0, revealedChars - offset)
+          const charsIn = Math.max(0, linesCharsRevealed - offset)
           const started = charsIn > 0
-          const isCurrentLine = started && revealedChars < offset + len
+          const isCurrentLine = started && linesCharsRevealed < offset + len
 
           const isEmpty = line === ''
           const isColorGrid = typeof line === 'object' && line.type === 'color-grid'
