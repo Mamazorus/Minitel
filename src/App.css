@@ -54,6 +54,7 @@
 .page-section.phase-mono     { background: #0a0a0a; }
 .page-section.phase-color    { background: #000080; }
 .page-section.phase-epilogue { background: #070707; }
+.page-section.phase-modern   { background: #f2f0eb; }
 
 /* ─── CRT OVERLAY ───────────────────────────────────────────── */
 
@@ -186,6 +187,13 @@
 .counter-label,
 .counter-num {
   white-space: nowrap;
+}
+
+.counter-subpage {
+  white-space: nowrap;
+  opacity: 0.45;
+  font-size: 0.85em;
+  padding-left: 0.5em;
 }
 
 @media (max-width: 450px) {
@@ -441,6 +449,75 @@
   gap: 8px;
 }
 
+/* ─── PHASE: MODERN (2012) ──────────────────────────────────── */
+
+.page-content.phase-modern .date-stamp {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.65rem;
+  color: #e03e2d;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.page-content.phase-modern .page-title {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: clamp(1.6rem, 5.5vw, 2.2rem);
+  font-weight: 800;
+  color: #111111;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-shadow: none;
+}
+
+.page-content.phase-modern .text-line {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.88rem;
+  color: #3a3a3a;
+  line-height: 1.72;
+  text-shadow: none;
+}
+
+.page-content.phase-modern .cursor {
+  color: #e03e2d;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.88rem;
+}
+
+/* Nav et timeline en phase modern : fond clair → texte sombre */
+.top-nav.phase-modern {
+  color: #111111;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  text-shadow: none;
+}
+
+.timeline.phase-modern .timeline-item {
+  background: linear-gradient(180deg, #e8e4db 0%, #dedad0 100%);
+  border-top:    1px solid rgba(0, 0, 0, 0.14);
+  border-left:   1px solid rgba(0, 0, 0, 0.1);
+  border-right:  1px solid rgba(0, 0, 0, 0.07);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.timeline.phase-modern .timeline-item.active {
+  color: #111111;
+  background: linear-gradient(180deg, #dedad0 0%, #d4cfc5 100%);
+  border-top:    1px solid rgba(0, 0, 0, 0.28);
+  border-left:   1px solid rgba(0, 0, 0, 0.2);
+  border-right:  1px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12), inset 0 2px 4px rgba(0,0,0,0.08);
+  transform: translateY(2px);
+  text-shadow: none;
+}
+
+.timeline.phase-modern .timeline-item:hover:not(.active) {
+  color: rgba(0, 0, 0, 0.75);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
 /* ─── PHASE: EPILOGUE ───────────────────────────────────────── */
 
 .page-content.phase-epilogue .date-stamp { color: #444; }
@@ -683,7 +760,8 @@
 .all-pages-overlay.phase-color .item-year { opacity: 0.45; }
 
 .item-year  { font-size: 0.85rem; opacity: 0.5; min-width: 62px; flex-shrink: 0; }
-.item-title { font-size: 0.95rem; line-height: 1.25; }
+.item-title { font-size: 0.95rem; line-height: 1.25; flex: 1; }
+.item-pages { font-size: 0.75rem; opacity: 0.4; flex-shrink: 0; }
 
 /* ─── RESPONSIVE ────────────────────────────────────────────── */
 
