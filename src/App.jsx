@@ -21,12 +21,12 @@ const PAGES = [
     displayDate: '1970 — 1974',
     title: 'LA NAISSANCE\nDU MINITEL',
     lines: [
-      'Depuis le début des années 1970,',
-      'le Centre National des Études de',
-      'Télécommunication (CNET) travaille',
-      'à la modernisation du téléphone',
+      'Depuis le debut des annees 1970,',
+      'le Centre National des Etudes de',
+      'Telecommunication (CNET) travaille',
+      'à la modernisation du telephone',
       'français, à l\'invention et au test',
-      'de nouvelles fonctionnalités.',
+      'de nouvelles fonctionnalites.',
     ],
     phase: 'mono',
   },
@@ -34,10 +34,10 @@ const PAGES = [
     id: 1,
     yearLabel: '1978',
     displayDate: '1978 — 1980',
-    title: 'L\'EXPÉRIENCE\nDE VÉLIZY',
+    title: 'L\'EXPERIENCE\nDE VELIZY',
     lines: [
-      'Le gouvernement lance une expérience',
-      'grandeur nature à Vélizy-Villacoublay.',
+      'Le gouvernement lance une experience',
+      'grandeur nature à Velizy-Villacoublay.',
       '',
       '2 500 foyers volontaires reçoivent',
       'gratuitement un terminal Minitel.',
@@ -45,8 +45,8 @@ const PAGES = [
       'ordinaires accèdent à des services',
       'en ligne depuis leur domicile :',
       '',
-      '> annuaire électronique',
-      '> météo et actualités',
+      '> annuaire electronique',
+      '> meteo et actualites',
       '> messagerie et petites annonces',
       '',
       'Le bilan est sans appel — positif.',
@@ -59,15 +59,15 @@ const PAGES = [
     displayDate: '1982',
     title: 'LE LANCEMENT\nOFFICIEL',
     lines: [
-      'Le 15 juin 1982, France Télécom',
-      'déploie le Minitel à l\'échelle',
-      'nationale. Chaque abonné au',
-      'téléphone peut obtenir un terminal',
-      'gratuitement en échange de',
+      'Le 15 juin 1982, France Telecom',
+      'deploie le Minitel à l\'echelle',
+      'nationale. Chaque abonne au',
+      'telephone peut obtenir un terminal',
+      'gratuitement en echange de',
       'l\'annuaire papier.',
       '',
-      'L\'annuaire électronique compte',
-      'déjà 13 millions de numéros.',
+      'L\'annuaire electronique compte',
+      'dejà 13 millions de numeros.',
       '',
       'C\'est la première infrastructure',
       'nationale de services en ligne',
@@ -79,18 +79,18 @@ const PAGES = [
     id: 3,
     yearLabel: '1985',
     displayDate: '1985 — 1991',
-    title: 'L\'APOGÉE\nDU RÉSEAU',
+    title: 'L\'APOGEE\nDU RESEAU',
     lines: [
-      'Le réseau Télétel compte plus de',
+      'Le reseau Teletel compte plus de',
       '6 millions de terminaux actifs.',
-      '25 000 services référencés.',
+      '25 000 services references.',
       '',
       '> 3614 ULLA  — rencontres',
-      '> 3615 SNCF  — réservation trains',
+      '> 3615 SNCF  — reservation trains',
       '> 3617 BANQUE — consultation compte',
-      '> 3615 METEO — bulletins régionaux',
+      '> 3615 METEO — bulletins regionaux',
       '',
-      'Le Minitel génère 7 milliards',
+      'Le Minitel genère 7 milliards',
       'de francs de chiffre d\'affaires.',
       'La France est en avance',
       'sur le reste du monde.',
@@ -103,18 +103,18 @@ const PAGES = [
     displayDate: '1996 — 2000',
     title: 'INTERNET\nARRIVE',
     lines: [
-      'Le World Wide Web débarque en',
+      'Le World Wide Web debarque en',
       'France. Gratuit, ouvert, mondial.',
       '',
-      'Le Minitel résiste : il reste',
+      'Le Minitel resiste : il reste',
       'plus simple, plus fiable,',
       'et son modèle de facturation',
-      'à la minute est déjà rodé.',
+      'à la minute est dejà rode.',
       '',
       'Mais les internautes augmentent',
-      'chaque année. Le combat est inégal.',
+      'chaque annee. Le combat est inegal.',
       '',
-      '1999 : France Télécom lance',
+      '1999 : France Telecom lance',
       'le Minitel sur internet — trop tard.',
     ],
     phase: 'color',
@@ -123,21 +123,21 @@ const PAGES = [
     id: 5,
     yearLabel: '2012',
     displayDate: '30 juin 2012',
-    title: 'EXTINCTION\nDU RÉSEAU',
+    title: 'EXTINCTION\nDU RESEAU',
     lines: [
-      'À minuit, France Télécom coupe',
-      'les derniers serveurs Télétel.',
+      'À minuit, France Telecom coupe',
+      'les derniers serveurs Teletel.',
       '',
       'Après 38 ans de service,',
-      '9 millions de terminaux déployés',
-      'et plus de 26 000 services créés,',
-      'le Minitel s\'éteint définitivement.',
+      '9 millions de terminaux deployes',
+      'et plus de 26 000 services crees,',
+      'le Minitel s\'eteint definitivement.',
       '',
-      'Il aura précédé Amazon, Google',
+      'Il aura precede Amazon, Google',
       'et Facebook de plus de 10 ans.',
       '',
       '> FIN DE SESSION',
-      '> CONNEXION TERMINÉE_',
+      '> CONNEXION TERMINEE_',
     ],
     phase: 'mono',
   },
@@ -152,7 +152,7 @@ function CRTOverlay({ phase }) {
       <div className="crt-vignette" />
       {showFlicker && <div className="crt-glow" />}
       {showFlicker && <div className="crt-flicker" />}
-      {/* Grain animé — feTurbulence avec seed qui change en continu */}
+      {/* Grain anime — feTurbulence avec seed qui change en continu */}
       <svg className="crt-grain" xmlns="http://www.w3.org/2000/svg">
         <filter id="grain-filter" x="0%" y="0%" width="100%" height="100%">
           <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="3" stitchTiles="stitch">
@@ -242,7 +242,7 @@ function PageContent({ page, isActive }) {
   const timersRef = useRef([])
   const intervalRef = useRef(null)
 
-  // Date → Titre → Lignes — compteur unifié
+  // Date → Titre → Lignes — compteur unifie
   const dateLength  = page.displayDate ? page.displayDate.length : 0
   const titleLength = page.title.length
 
@@ -368,9 +368,9 @@ function PageContent({ page, isActive }) {
 }
 
 // ── All Pages Overlay ──────────────────────────────────────────
-function AllPagesOverlay({ pages, currentIdx, onNavigate, onClose }) {
+function AllPagesOverlay({ pages, currentIdx, phase, onNavigate, onClose }) {
   return (
-    <div className="all-pages-overlay" onClick={onClose}>
+    <div className={`all-pages-overlay phase-${phase}`} onClick={onClose}>
       <div className="all-pages-inner" onClick={(e) => e.stopPropagation()}>
         <div className="all-pages-header">
           <span>NAVIGATION — {pages.length} PAGES</span>
@@ -455,6 +455,7 @@ function App() {
         <AllPagesOverlay
           pages={PAGES}
           currentIdx={currentIdx}
+          phase={currentPhase}
           onNavigate={scrollToPage}
           onClose={() => setShowOverlay(false)}
         />
