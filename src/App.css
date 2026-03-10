@@ -54,7 +54,7 @@
 .page-section.phase-mono     { background: #0a0a0a; }
 .page-section.phase-color    { background: #000080; }
 .page-section.phase-epilogue { background: #070707; }
-.page-section.phase-modern   { background: #f2f0eb; }
+.page-section.phase-modern   { background: #14120f; padding-top: calc(5vh + 72px); padding-bottom: calc(5vh + 72px); }
 
 /* ─── CRT OVERLAY ───────────────────────────────────────────── */
 
@@ -65,6 +65,12 @@
   z-index: 900;
   overflow: hidden;
 }
+
+/* Quand la phase est modern, le CRT doit toujours être hors-écran */
+.crt-overlay.phase-modern {
+  transform: translateY(-100vh) !important;
+}
+
 
 .crt-scanlines {
   position: absolute;
@@ -464,7 +470,7 @@
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-size: clamp(1.6rem, 5.5vw, 2.2rem);
   font-weight: 800;
-  color: #111111;
+  color: #f0ece4;
   letter-spacing: -0.02em;
   line-height: 1.1;
   text-shadow: none;
@@ -473,7 +479,7 @@
 .page-content.phase-modern .text-line {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 0.88rem;
-  color: #3a3a3a;
+  color: #9c9488;
   line-height: 1.72;
   text-shadow: none;
 }
@@ -484,38 +490,66 @@
   font-size: 0.88rem;
 }
 
-/* Nav et timeline en phase modern : fond clair → texte sombre */
-.top-nav.phase-modern {
-  color: #111111;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  text-shadow: none;
+/* Nav burger (phase modern) */
+.top-nav--modern {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: none;
+  background: transparent;
+}
+
+.burger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.burger-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: rgba(240, 236, 228, 0.55);
+  transition: background 0.2s;
+}
+
+.burger-btn:hover span {
+  background: rgba(240, 236, 228, 0.9);
 }
 
 .timeline.phase-modern .timeline-item {
-  background: linear-gradient(180deg, #e8e4db 0%, #dedad0 100%);
-  border-top:    1px solid rgba(0, 0, 0, 0.14);
-  border-left:   1px solid rgba(0, 0, 0, 0.1);
-  border-right:  1px solid rgba(0, 0, 0, 0.07);
-  border-bottom: 3px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
-  color: rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, #2a2520 0%, #1e1b17 100%);
+  border-top:    1px solid rgba(240, 236, 228, 0.12);
+  border-left:   1px solid rgba(240, 236, 228, 0.09);
+  border-right:  1px solid rgba(240, 236, 228, 0.06);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.7);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(240, 236, 228, 0.06);
+  color: rgba(240, 236, 228, 0.35);
 }
 
 .timeline.phase-modern .timeline-item.active {
-  color: #111111;
-  background: linear-gradient(180deg, #dedad0 0%, #d4cfc5 100%);
-  border-top:    1px solid rgba(0, 0, 0, 0.28);
-  border-left:   1px solid rgba(0, 0, 0, 0.2);
-  border-right:  1px solid rgba(0, 0, 0, 0.14);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.12), inset 0 2px 4px rgba(0,0,0,0.08);
+  color: #e03e2d;
+  background: linear-gradient(180deg, #1a1208 0%, #130e05 100%);
+  border-top:    1px solid rgba(224, 62, 45, 0.3);
+  border-left:   1px solid rgba(224, 62, 45, 0.2);
+  border-right:  1px solid rgba(224, 62, 45, 0.15);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.7);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(0, 0, 0, 0.4);
   transform: translateY(2px);
   text-shadow: none;
 }
 
 .timeline.phase-modern .timeline-item:hover:not(.active) {
-  color: rgba(0, 0, 0, 0.75);
-  box-shadow: 0 5px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+  color: rgba(240, 236, 228, 0.7);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(240, 236, 228, 0.1);
 }
 
 /* ─── PHASE: EPILOGUE ───────────────────────────────────────── */
@@ -763,6 +797,73 @@
 .item-title { font-size: 0.95rem; line-height: 1.25; flex: 1; }
 .item-pages { font-size: 0.75rem; opacity: 0.4; flex-shrink: 0; }
 
+/* ── Overlay phase modern ── */
+.all-pages-overlay.phase-modern {
+  background: #14120f;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.all-pages-overlay.phase-modern .all-pages-inner {
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  background: #14120f;
+  border: none;
+  scrollbar-color: rgba(240, 236, 228, 0.1) transparent;
+}
+
+.all-pages-overlay.phase-modern .all-pages-header {
+  background: transparent;
+  border-bottom: none;
+  padding: 16px 16px;
+}
+
+.all-pages-overlay.phase-modern .all-pages-header span {
+  display: none;
+}
+
+.all-pages-overlay.phase-modern .close-btn {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: rgba(240, 236, 228, 0.4);
+  font-size: 1.1rem;
+  padding: 6px;
+  z-index: 10;
+}
+.all-pages-overlay.phase-modern .close-btn:hover {
+  color: rgba(240, 236, 228, 0.9);
+}
+
+.all-pages-overlay.phase-modern .all-pages-item {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  color: rgba(240, 236, 228, 0.45);
+  border-bottom: 1px solid rgba(240, 236, 228, 0.05);
+}
+.all-pages-overlay.phase-modern .all-pages-item:hover {
+  background: rgba(240, 236, 228, 0.04);
+  color: rgba(240, 236, 228, 0.85);
+}
+.all-pages-overlay.phase-modern .all-pages-item.active {
+  color: #e03e2d;
+  background: rgba(224, 62, 45, 0.06);
+  border-left: 2px solid #e03e2d;
+}
+.all-pages-overlay.phase-modern .item-year {
+  font-size: 0.72rem;
+  opacity: 0.4;
+}
+.all-pages-overlay.phase-modern .item-title {
+  font-size: 0.82rem;
+}
+
 /* ─── RESPONSIVE ────────────────────────────────────────────── */
 
 @media (min-width: 600px) {
@@ -770,5 +871,10 @@
     align-items: center;
     padding-left: max(22px, calc(50% - 280px));
     padding-right: max(22px, calc(50% - 280px));
+  }
+
+  .page-section.phase-modern {
+    padding-left: max(32px, calc(50% - 340px));
+    padding-right: max(32px, calc(50% - 340px));
   }
 }

@@ -18,6 +18,28 @@ const COLOR_MAP = {
 // Le scroll avance page par page ; la timeline reste sur la date du chapitre.
 const CHAPTERS = [
   {
+    id: 'intro',
+    yearLabel: '◦',
+    displayDate: 'HISTOIRE DU NUMERIQUE',
+    phase: 'intro',
+    pages: [
+      {
+        title: 'MINITEL',
+        lines: [
+          '1982 — 2012',
+          '',
+          'Le premier reseau de services',
+          'en ligne grand public au monde.',
+          '',
+          'Trente ans d\'une aventure',
+          'numerique singuliere.',
+          '',
+          '↓',
+        ],
+      },
+    ],
+  },
+  {
     id: 0,
     yearLabel: '1974',
     displayDate: '1970 — 1974',
@@ -198,18 +220,20 @@ const CHAPTER_START = CHAPTERS.map((ch) =>
   FLAT_PAGES.findIndex((p) => p.chapterIdx === CHAPTERS.indexOf(ch))
 )
 
+// Index de la première page modern (pour l'animation de vignette au scroll)
+const MODERN_FLAT_IDX = FLAT_PAGES.findIndex((p) => p.phase === 'modern')
+
 // ── CRT Overlay ────────────────────────────────────────────────
-function CRTOverlay({ phase }) {
+function CRTOverlay({ phase, overlayRef }) {
   const showFlicker = phase === 'mono' || phase === 'color'
-  const showCRT     = phase !== 'modern'
   return (
-    <div className="crt-overlay" aria-hidden="true">
-      {showCRT && <div className="crt-scanlines" />}
-      {showCRT && <div className="crt-vignette" />}
+    <div className={`crt-overlay phase-${phase}`} ref={overlayRef} aria-hidden="true">
+      <div className="crt-scanlines" />
+      <div className="crt-vignette" />
       {showFlicker && <div className="crt-glow" />}
       {showFlicker && <div className="crt-flicker" />}
       {/* Grain anime — feTurbulence avec seed qui change en continu */}
-      {showCRT && <svg className="crt-grain" xmlns="http://www.w3.org/2000/svg">
+      <svg className="crt-grain" xmlns="http://www.w3.org/2000/svg">
         <filter id="grain-filter" x="0%" y="0%" width="100%" height="100%">
           <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="3" stitchTiles="stitch">
             <animate
@@ -222,13 +246,25 @@ function CRTOverlay({ phase }) {
           <feColorMatrix type="saturate" values="0" />
         </filter>
         <rect width="100%" height="100%" filter="url(#grain-filter)" opacity="0.09" />
-      </svg>}
+      </svg>
     </div>
   )
 }
 
 // ── Top Navigation ─────────────────────────────────────────────
 function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter, phase, onShowAll }) {
+  if (phase === 'modern') {
+    return (
+      <nav className="top-nav--modern">
+        <button className="burger-btn" onClick={onShowAll} aria-label="Menu">
+          <span />
+          <span />
+          <span />
+        </button>
+      </nav>
+    )
+  }
+
   return (
     <nav className={`top-nav phase-${phase}`}>
       <span className="page-counter">
@@ -324,6 +360,12 @@ function PageContent({ page, isActive }) {
 
     if (!isActive) return
 
+    // Phase moderne (2012) : pas d'effet machine à écrire, affichage immédiat
+    if (page.phase === 'modern') {
+      setRevealedChars(totalChars)
+      return
+    }
+
     const t0 = setTimeout(() => {
       let count = 0
       intervalRef.current = setInterval(() => {
@@ -412,7 +454,7 @@ function PageContent({ page, isActive }) {
           )
         })}
 
-        {allRevealed && isActive && page.phase !== 'intro' && (
+        {allRevealed && isActive && page.phase !== 'intro' && page.phase !== 'modern' && (
           <span className="cursor">█</span>
         )}
       </div>
@@ -461,10 +503,24 @@ function App() {
   const [showOverlay, setShowOverlay] = useState(false)
   const sectionsRef = useRef([])
   const scrollContainerRef = useRef(null)
+  const crtOverlayRef = useRef(null)
 
   const currentPage    = FLAT_PAGES[currentFlatIdx]
   const currentPhase   = currentPage?.phase ?? 'intro'
   const currentChapterIdx = currentPage?.chapterIdx ?? 0
+
+  // Applique le translateY sur le CRT overlay selon la position de scroll
+  const applyCRTTransform = (scrollTop, h) => {
+    if (MODERN_FLAT_IDX < 0 || !crtOverlayRef.current) return
+    const modernStart = MODERN_FLAT_IDX * h
+    const progress = (scrollTop - (modernStart - h)) / h
+    const clamped = Math.max(0, Math.min(1, progress))
+    if (clamped >= 1 || clamped <= 0) {
+      crtOverlayRef.current.style.transform = ''
+    } else {
+      crtOverlayRef.current.style.transform = `translateY(-${clamped * h}px)`
+    }
+  }
 
   // Track which section is in view via scroll position
   useEffect(() => {
@@ -472,8 +528,24 @@ function App() {
     if (!container) return
 
     const onScroll = () => {
-      const idx = Math.round(container.scrollTop / container.clientHeight)
+      const h = container.clientHeight
+      const scrollTop = container.scrollTop
+      const idx = Math.round(scrollTop / h)
       setCurrentFlatIdx(Math.min(idx, FLAT_PAGES.length - 1))
+      // Anime le CRT overlay entre la dernière page pré-modern et la page modern
+      if (MODERN_FLAT_IDX >= 0 && crtOverlayRef.current) {
+        const modernStart = MODERN_FLAT_IDX * h
+        const progress = (scrollTop - (modernStart - h)) / h
+        const clamped = Math.max(0, Math.min(1, progress))
+        if (clamped >= 1) {
+          // Laisse le CSS !important prendre le relais (pas d'inline style)
+          crtOverlayRef.current.style.transform = ''
+        } else if (clamped <= 0) {
+          crtOverlayRef.current.style.transform = ''
+        } else {
+          crtOverlayRef.current.style.transform = `translateY(-${clamped * h}px)`
+        }
+      }
     }
 
     container.addEventListener('scroll', onScroll, { passive: true })
@@ -490,14 +562,18 @@ function App() {
   const scrollToFlatPage = (idx) => {
     const container = scrollContainerRef.current
     if (container) {
-      container.scrollTo({ top: idx * container.clientHeight, behavior: 'instant' })
+      const h = container.clientHeight
+      const scrollTop = idx * h
+      container.scrollTo({ top: scrollTop, behavior: 'instant' })
+      setCurrentFlatIdx(Math.min(idx, FLAT_PAGES.length - 1))
+      applyCRTTransform(scrollTop, h)
     }
   }
 
   return (
     <div className="app">
       {/* CRT visual effect */}
-      <CRTOverlay phase={currentPhase} />
+      <CRTOverlay phase={currentPhase} overlayRef={crtOverlayRef} />
 
       {/* Top bar */}
       <TopNav
