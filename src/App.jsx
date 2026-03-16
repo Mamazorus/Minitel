@@ -275,7 +275,7 @@ function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter,
         )}
       </span>
       <button className="all-pages-btn" onClick={onShowAll}>
-        Toute les pages
+        Toutes les pages
       </button>
     </nav>
   )
