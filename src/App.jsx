@@ -285,7 +285,7 @@ const CHAPTERS = [
     id: 'heritage',
     yearLabel: '2001',
     displayDate: '2001, 2011',
-    phase: 'epilogue',
+    phase: 'color',
     pages: [
       {
         title: 'CE QU\'IL\nA INVENTE',
