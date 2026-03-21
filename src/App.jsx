@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import './App.css'
 
 // ── Minitel 8-color palette ────────────────────────────────────
@@ -196,29 +196,46 @@ const CHAPTERS = [
   },
 ]
 
-// ── Données dérivées ───────────────────────────────────────────
-// Liste plate de toutes les pages pour le scroll
-const FLAT_PAGES = CHAPTERS.flatMap((ch, chIdx) =>
-  ch.pages.map((pg, pgIdx) => ({
-    id: `${ch.id}-${pgIdx}`,
-    chapterIdx: chIdx,
-    pageInChapter: pgIdx,
-    totalPagesInChapter: ch.pages.length,
-    yearLabel: ch.yearLabel,
-    displayDate: ch.displayDate,
-    phase: ch.phase,
-    title: pg.title,
-    lines: pg.lines,
+// ── Helpers de pagination ───────────────────────────────────────
+
+function buildFlatPages(chapters) {
+  return chapters.flatMap((ch, chIdx) =>
+    ch.pages.map((pg, pgIdx) => ({
+      id: `${ch.id}-${pgIdx}`,
+      chapterIdx: chIdx,
+      pageInChapter: pgIdx,
+      totalPagesInChapter: ch.pages.length,
+      yearLabel: ch.yearLabel,
+      displayDate: ch.displayDate,
+      phase: ch.phase,
+      title: pg.title,
+      lines: pg.lines,
+    }))
+  )
+}
+
+// Découpe automatiquement les pages dont le contenu dépasse maxLines lignes
+function autoPaginate(chapters, maxLines) {
+  return chapters.map(ch => ({
+    ...ch,
+    pages: ch.pages.flatMap(pg => {
+      if (pg.lines.length <= maxLines) return [pg]
+      const pages = []
+      let remaining = [...pg.lines]
+      while (remaining.length > 0) {
+        let cutAt = Math.min(maxLines, remaining.length)
+        // Couper de préférence à une ligne vide pour un split propre
+        for (let i = cutAt - 1; i >= Math.floor(maxLines / 2); i--) {
+          if (remaining[i] === '') { cutAt = i; break }
+        }
+        pages.push({ ...pg, lines: remaining.slice(0, cutAt) })
+        remaining = remaining.slice(cutAt)
+        while (remaining.length > 0 && remaining[0] === '') remaining.shift()
+      }
+      return pages
+    })
   }))
-)
-
-// Index (dans FLAT_PAGES) de la première page de chaque chapitre
-const CHAPTER_START = CHAPTERS.map((ch) =>
-  FLAT_PAGES.findIndex((p) => p.chapterIdx === CHAPTERS.indexOf(ch))
-)
-
-// Index de la première page modern (pour l'animation de vignette au scroll)
-const MODERN_FLAT_IDX = FLAT_PAGES.findIndex((p) => p.phase === 'modern')
+}
 
 // ── CRT Overlay ────────────────────────────────────────────────
 function CRTOverlay({ phase, overlayRef }) {
@@ -279,7 +296,7 @@ function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter,
 }
 
 // ── Timeline ───────────────────────────────────────────────────
-function Timeline({ chapters, currentChapterIdx, phase, onNavigate }) {
+function Timeline({ chapters, currentChapterIdx, phase, onNavigate, chapterStart }) {
   const timelineRef = useRef(null)
 
   useEffect(() => {
@@ -296,7 +313,7 @@ function Timeline({ chapters, currentChapterIdx, phase, onNavigate }) {
         <button
           key={ch.id}
           className={`timeline-item${i === currentChapterIdx ? ' active' : ''}`}
-          onClick={() => onNavigate(CHAPTER_START[i])}
+          onClick={() => onNavigate(chapterStart[i])}
         >
           {ch.yearLabel}
         </button>
@@ -460,7 +477,7 @@ function PageContent({ page, isActive }) {
 }
 
 // ── All Pages Overlay ──────────────────────────────────────────
-function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClose }) {
+function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClose, chapterStart }) {
   return (
     <div className={`all-pages-overlay phase-${phase}`} onClick={onClose}>
       <div className="all-pages-inner" onClick={(e) => e.stopPropagation()}>
@@ -476,7 +493,7 @@ function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClo
             key={ch.id}
             className={`all-pages-item${i === currentChapterIdx ? ' active' : ''}`}
             onClick={() => {
-              onNavigate(CHAPTER_START[i])
+              onNavigate(chapterStart[i])
               onClose()
             }}
           >
@@ -496,20 +513,37 @@ function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClo
 
 // ── Main App ───────────────────────────────────────────────────
 function App() {
+  // Pagination dynamique selon la hauteur du viewport
+  const getMaxLines = () => window.innerHeight < 700 ? 7 : 12
+  const [maxLines, setMaxLines] = useState(getMaxLines)
+  useEffect(() => {
+    const onResize = () => setMaxLines(prev => {
+      const next = getMaxLines()
+      return next !== prev ? next : prev
+    })
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  const chapters      = useMemo(() => autoPaginate(CHAPTERS, maxLines), [maxLines])
+  const flatPages     = useMemo(() => buildFlatPages(chapters), [chapters])
+  const chapterStart  = useMemo(() => chapters.map((_, i) => flatPages.findIndex(p => p.chapterIdx === i)), [chapters, flatPages])
+  const modernFlatIdx = useMemo(() => flatPages.findIndex(p => p.phase === 'modern'), [flatPages])
+
   const [currentFlatIdx, setCurrentFlatIdx] = useState(0)
   const [showOverlay, setShowOverlay] = useState(false)
   const sectionsRef = useRef([])
   const scrollContainerRef = useRef(null)
   const crtOverlayRef = useRef(null)
 
-  const currentPage    = FLAT_PAGES[currentFlatIdx]
+  const currentPage    = flatPages[currentFlatIdx]
   const currentPhase   = currentPage?.phase ?? 'intro'
   const currentChapterIdx = currentPage?.chapterIdx ?? 0
 
   // Applique le translateY sur le CRT overlay selon la position de scroll
   const applyCRTTransform = (scrollTop, h) => {
-    if (MODERN_FLAT_IDX < 0 || !crtOverlayRef.current) return
-    const modernStart = MODERN_FLAT_IDX * h
+    if (modernFlatIdx < 0 || !crtOverlayRef.current) return
+    const modernStart = modernFlatIdx * h
     const progress = (scrollTop - (modernStart - h)) / h
     const clamped = Math.max(0, Math.min(1, progress))
     if (clamped >= 1 || clamped <= 0) {
@@ -528,10 +562,10 @@ function App() {
       const h = container.clientHeight
       const scrollTop = container.scrollTop
       const idx = Math.round(scrollTop / h)
-      setCurrentFlatIdx(Math.min(idx, FLAT_PAGES.length - 1))
+      setCurrentFlatIdx(Math.min(idx, flatPages.length - 1))
       // Anime le CRT overlay entre la dernière page pré-modern et la page modern
-      if (MODERN_FLAT_IDX >= 0 && crtOverlayRef.current) {
-        const modernStart = MODERN_FLAT_IDX * h
+      if (modernFlatIdx >= 0 && crtOverlayRef.current) {
+        const modernStart = modernFlatIdx * h
         const progress = (scrollTop - (modernStart - h)) / h
         const clamped = Math.max(0, Math.min(1, progress))
         if (clamped >= 1) {
@@ -547,7 +581,7 @@ function App() {
 
     container.addEventListener('scroll', onScroll, { passive: true })
     return () => container.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [flatPages, modernFlatIdx])
 
   // Close overlay with Escape key
   useEffect(() => {
@@ -562,7 +596,7 @@ function App() {
       const h = container.clientHeight
       const scrollTop = idx * h
       container.scrollTo({ top: scrollTop, behavior: 'instant' })
-      setCurrentFlatIdx(Math.min(idx, FLAT_PAGES.length - 1))
+      setCurrentFlatIdx(Math.min(idx, flatPages.length - 1))
       applyCRTTransform(scrollTop, h)
     }
   }
@@ -575,7 +609,7 @@ function App() {
       {/* Top bar */}
       <TopNav
         chapterIdx={currentChapterIdx}
-        totalChapters={CHAPTERS.length}
+        totalChapters={chapters.length}
         pageInChapter={currentPage?.pageInChapter ?? 0}
         totalPagesInChapter={currentPage?.totalPagesInChapter ?? 1}
         phase={currentPhase}
@@ -585,17 +619,18 @@ function App() {
       {/* Navigation overlay */}
       {showOverlay && (
         <AllPagesOverlay
-          chapters={CHAPTERS}
+          chapters={chapters}
           currentChapterIdx={currentChapterIdx}
           phase={currentPhase}
           onNavigate={scrollToFlatPage}
           onClose={() => setShowOverlay(false)}
+          chapterStart={chapterStart}
         />
       )}
 
       {/* Scrollable content */}
       <div className="scroll-container" ref={scrollContainerRef}>
-        {FLAT_PAGES.map((page, i) => (
+        {flatPages.map((page, i) => (
           <section
             key={page.id}
             className={`page-section phase-${page.phase}`}
@@ -608,10 +643,11 @@ function App() {
 
       {/* Bottom timeline */}
       <Timeline
-        chapters={CHAPTERS}
+        chapters={chapters}
         currentChapterIdx={currentChapterIdx}
         phase={currentPhase}
         onNavigate={scrollToFlatPage}
+        chapterStart={chapterStart}
       />
     </div>
   )
