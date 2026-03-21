@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import './App.css'
+import MinitelScene from './components/MinitelScene'
 
 // ── Minitel 8-color palette ────────────────────────────────────
 const COLOR_MAP = {
@@ -17,30 +18,6 @@ const COLOR_MAP = {
 // Chaque chapitre a une date et peut contenir plusieurs pages.
 // Le scroll avance page par page ; la timeline reste sur la date du chapitre.
 const CHAPTERS = [
-  // ── INTRODUCTION ──────────────────────────────────────────────
-  {
-    id: 'intro',
-    yearLabel: '◦',
-    displayDate: 'HISTOIRE DU NUMERIQUE',
-    phase: 'intro',
-    pages: [
-      {
-        title: 'MINITEL',
-        lines: [
-          'Il a tout inventé.',
-          'Et tout le monde l\'a oublié.',
-          '',
-          'Avant Google. Avant Amazon.',
-          'Avant les réseaux sociaux.',
-          '',
-          'Il y avait le Minitel.',
-          '',
-          '↓',
-        ],
-      },
-    ],
-  },
-
   // ── PARTIE 1, CONTEXTE (1977) ─────────────────────────────────
   {
     id: 'contexte',
@@ -674,9 +651,34 @@ function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClo
   )
 }
 
+// ── CRT Boot Screen ────────────────────────────────────────────
+function CRTBoot({ onComplete }) {
+  const [fading, setFading] = useState(false)
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setFading(true), 1600)
+    const t2 = setTimeout(onComplete, 2300)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [])
+
+  return (
+    <div className={`crt-boot${fading ? ' crt-boot--fading' : ''}`} aria-hidden="true">
+      <div className="crt-boot__scanlines" />
+      <div className="crt-boot__vignette" />
+      <div className="crt-boot__line" />
+      <div className="crt-boot__glow" />
+    </div>
+  )
+}
+
 // ── Main App ───────────────────────────────────────────────────
 function App() {
-  // Pagination dynamique selon la hauteur du viewport
+  // ── Scène 3D intro ──────────────────────────────────────────
+  const [showScene, setShowScene] = useState(true)
+  const [fadeOut, setFadeOut]   = useState(false)
+  const [showBoot, setShowBoot] = useState(false)
+
+  // ── Pagination dynamique selon la hauteur du viewport ────────
   const getMaxLines = () => window.innerHeight < 700 ? 7 : 12
   const [maxLines, setMaxLines] = useState(getMaxLines)
   useEffect(() => {
@@ -764,55 +766,82 @@ function App() {
     }
   }
 
+  const handleSceneComplete = () => {
+    setFadeOut(true)
+    setShowBoot(true)
+    setTimeout(() => setShowScene(false), 700)
+  }
+
+  const handleBootComplete = () => setShowBoot(false)
+
   return (
-    <div className="app">
-      {/* CRT visual effect */}
-      <CRTOverlay phase={currentPhase} overlayRef={crtOverlayRef} />
+    <>
+      {/* ── Scène 3D en overlay ── */}
+      {showScene && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+          opacity: fadeOut ? 0 : 1,
+          transition: 'opacity 0.7s ease',
+          pointerEvents: fadeOut ? 'none' : 'auto',
+        }}>
+          <MinitelScene onComplete={handleSceneComplete} />
+        </div>
+      )}
 
-      {/* Top bar */}
-      <TopNav
-        chapterIdx={currentChapterIdx}
-        totalChapters={chapters.length}
-        pageInChapter={currentPage?.pageInChapter ?? 0}
-        totalPagesInChapter={currentPage?.totalPagesInChapter ?? 1}
-        phase={currentPhase}
-        onShowAll={() => setShowOverlay(true)}
-      />
+      {/* ── Animation démarrage CRT ── */}
+      {showBoot && <CRTBoot onComplete={handleBootComplete} />}
 
-      {/* Navigation overlay */}
-      {showOverlay && (
-        <AllPagesOverlay
+      {/* ── Scrollytelling (toujours monté en dessous) ── */}
+      <div className="app">
+        <CRTOverlay phase={currentPhase} overlayRef={crtOverlayRef} />
+
+        <TopNav
+          chapterIdx={currentChapterIdx}
+          totalChapters={chapters.length}
+          pageInChapter={currentPage?.pageInChapter ?? 0}
+          totalPagesInChapter={currentPage?.totalPagesInChapter ?? 1}
+          phase={currentPhase}
+          onShowAll={() => setShowOverlay(true)}
+        />
+
+        {showOverlay && (
+          <AllPagesOverlay
+            chapters={chapters}
+            currentChapterIdx={currentChapterIdx}
+            phase={currentPhase}
+            onNavigate={scrollToFlatPage}
+            onClose={() => setShowOverlay(false)}
+            chapterStart={chapterStart}
+          />
+        )}
+
+        <div
+          className="scroll-container"
+          ref={scrollContainerRef}
+          style={(showScene || showBoot) ? { overflow: 'hidden' } : {}}
+        >
+          {flatPages.map((page, i) => (
+            <section
+              key={page.id}
+              className={`page-section phase-${page.phase}`}
+              ref={(el) => (sectionsRef.current[i] = el)}
+            >
+              <PageContent page={page} isActive={currentFlatIdx === i && !showScene && !showBoot} />
+            </section>
+          ))}
+        </div>
+
+        <Timeline
           chapters={chapters}
           currentChapterIdx={currentChapterIdx}
           phase={currentPhase}
           onNavigate={scrollToFlatPage}
-          onClose={() => setShowOverlay(false)}
           chapterStart={chapterStart}
         />
-      )}
-
-      {/* Scrollable content */}
-      <div className="scroll-container" ref={scrollContainerRef}>
-        {flatPages.map((page, i) => (
-          <section
-            key={page.id}
-            className={`page-section phase-${page.phase}`}
-            ref={(el) => (sectionsRef.current[i] = el)}
-          >
-            <PageContent page={page} isActive={currentFlatIdx === i} />
-          </section>
-        ))}
       </div>
-
-      {/* Bottom timeline */}
-      <Timeline
-        chapters={chapters}
-        currentChapterIdx={currentChapterIdx}
-        phase={currentPhase}
-        onNavigate={scrollToFlatPage}
-        chapterStart={chapterStart}
-      />
-    </div>
+    </>
   )
 }
 

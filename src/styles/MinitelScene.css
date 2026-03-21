@@ -1,0 +1,33 @@
+.minitel-scene-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: #1a1a2e;
+}
+
+.canvas-container {
+  width: 100%;
+  height: 100vh;
+}
+
+.scroll-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.8;
+  animation: hint-pulse 2s infinite;
+  z-index: 10;
+  pointer-events: none;
+  letter-spacing: 0.15em;
+}
+
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.8; }
+  50%       { opacity: 0.2; }
+}
