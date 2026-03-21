@@ -13,146 +13,226 @@ const COLOR_MAP = {
   BLANC:   { display: '#ffffff', swatch: '#ffffff' },
 }
 
-// ── Page content data ──────────────────────────────────────────
-const PAGES = [
+// ── Chapter + page data ────────────────────────────────────────
+// Chaque chapitre a une date et peut contenir plusieurs pages.
+// Le scroll avance page par page ; la timeline reste sur la date du chapitre.
+const CHAPTERS = [
+  {
+    id: 'intro',
+    yearLabel: '◦',
+    displayDate: 'HISTOIRE DU NUMERIQUE',
+    phase: 'intro',
+    pages: [
+      {
+        title: 'MINITEL',
+        lines: [
+          '1982 — 2012',
+          '',
+          'Le premier reseau de services',
+          'en ligne grand public au monde.',
+          '',
+          'Trente ans d\'une aventure',
+          'numerique singuliere.',
+          '',
+          '↓',
+        ],
+      },
+    ],
+  },
   {
     id: 0,
     yearLabel: '1974',
     displayDate: '1970 — 1974',
-    title: 'LA NAISSANCE\nDU MINITEL',
-    lines: [
-      'Depuis le début des années 1970,',
-      'le Centre National des Études de',
-      'Télécommunication (CNET) travaille',
-      'à la modernisation du téléphone',
-      'français, à l\'invention et au test',
-      'de nouvelles fonctionnalités.',
-    ],
     phase: 'mono',
+    pages: [
+      {
+        title: 'LA NAISSANCE\nDU MINITEL',
+        lines: [
+          'Depuis le debut des annees 1970,',
+          'le Centre National des Etudes de',
+          'Telecommunication (CNET) travaille',
+          'à la modernisation du telephone',
+          'français, à l\'invention et au test',
+          'de nouvelles fonctionnalites.',
+        ],
+      },
+    ],
   },
   {
     id: 1,
     yearLabel: '1978',
     displayDate: '1978 — 1980',
-    title: 'L\'EXPÉRIENCE\nDE VÉLIZY',
-    lines: [
-      'Le gouvernement lance une expérience',
-      'grandeur nature à Vélizy-Villacoublay.',
-      '',
-      '2 500 foyers volontaires reçoivent',
-      'gratuitement un terminal Minitel.',
-      'Pour la première fois, des familles',
-      'ordinaires accèdent à des services',
-      'en ligne depuis leur domicile :',
-      '',
-      '> annuaire électronique',
-      '> météo et actualités',
-      '> messagerie et petites annonces',
-      '',
-      'Le bilan est sans appel — positif.',
-    ],
     phase: 'mono',
+    pages: [
+      {
+        title: 'L\'EXPERIENCE\nDE VELIZY',
+        lines: [
+          'Le gouvernement lance une experience',
+          'grandeur nature à Velizy-Villacoublay.',
+          '',
+          '2 500 foyers volontaires reçoivent',
+          'gratuitement un terminal Minitel.',
+          'Pour la première fois, des familles',
+          'ordinaires accèdent à des services',
+          'en ligne depuis leur domicile :',
+        ],
+      },
+      {
+        title: 'L\'EXPERIENCE\nDE VELIZY',
+        lines: [
+          '> annuaire electronique',
+          '> meteo et actualites',
+          '> messagerie et petites annonces',
+          '',
+          'Le bilan est sans appel — positif.',
+        ],
+      },
+    ],
   },
   {
     id: 2,
     yearLabel: '1982',
     displayDate: '1982',
-    title: 'LE LANCEMENT\nOFFICIEL',
-    lines: [
-      'Le 15 juin 1982, France Télécom',
-      'déploie le Minitel à l\'échelle',
-      'nationale. Chaque abonné au',
-      'téléphone peut obtenir un terminal',
-      'gratuitement en échange de',
-      'l\'annuaire papier.',
-      '',
-      'L\'annuaire électronique compte',
-      'déjà 13 millions de numéros.',
-      '',
-      'C\'est la première infrastructure',
-      'nationale de services en ligne',
-      'au monde.',
-    ],
     phase: 'mono',
+    pages: [
+      {
+        title: 'LE LANCEMENT\nOFFICIEL',
+        lines: [
+          'Le 15 juin 1982, France Telecom',
+          'deploie le Minitel à l\'echelle',
+          'nationale. Chaque abonne au',
+          'telephone peut obtenir un terminal',
+          'gratuitement en echange de',
+          'l\'annuaire papier.',
+          '',
+          'L\'annuaire electronique compte',
+          'dejà 13 millions de numeros.',
+          '',
+          'C\'est la première infrastructure',
+          'nationale de services en ligne',
+          'au monde.',
+        ],
+      },
+    ],
   },
   {
     id: 3,
     yearLabel: '1985',
     displayDate: '1985 — 1991',
-    title: 'L\'APOGÉE\nDU RÉSEAU',
-    lines: [
-      'Le réseau Télétel compte plus de',
-      '6 millions de terminaux actifs.',
-      '25 000 services référencés.',
-      '',
-      '> 3614 ULLA  — rencontres',
-      '> 3615 SNCF  — réservation trains',
-      '> 3617 BANQUE — consultation compte',
-      '> 3615 METEO — bulletins régionaux',
-      '',
-      'Le Minitel génère 7 milliards',
-      'de francs de chiffre d\'affaires.',
-      'La France est en avance',
-      'sur le reste du monde.',
-    ],
     phase: 'color',
+    pages: [
+      {
+        title: 'L\'APOGEE\nDU RESEAU',
+        lines: [
+          'Le reseau Teletel compte plus de',
+          '6 millions de terminaux actifs.',
+          '25 000 services references.',
+          '',
+          '> 3614 ULLA  — rencontres',
+          '> 3615 SNCF  — reservation trains',
+          '> 3617 BANQUE — consultation compte',
+          '> 3615 METEO — bulletins regionaux',
+        ],
+      },
+      {
+        title: 'L\'APOGEE\nDU RESEAU',
+        lines: [
+          'Le Minitel genère 7 milliards',
+          'de francs de chiffre d\'affaires.',
+          'La France est en avance',
+          'sur le reste du monde.',
+        ],
+      },
+    ],
   },
   {
     id: 4,
     yearLabel: '1996',
     displayDate: '1996 — 2000',
-    title: 'INTERNET\nARRIVE',
-    lines: [
-      'Le World Wide Web débarque en',
-      'France. Gratuit, ouvert, mondial.',
-      '',
-      'Le Minitel résiste : il reste',
-      'plus simple, plus fiable,',
-      'et son modèle de facturation',
-      'à la minute est déjà rodé.',
-      '',
-      'Mais les internautes augmentent',
-      'chaque année. Le combat est inégal.',
-      '',
-      '1999 : France Télécom lance',
-      'le Minitel sur internet — trop tard.',
-    ],
     phase: 'color',
+    pages: [
+      {
+        title: 'INTERNET\nARRIVE',
+        lines: [
+          'Le World Wide Web debarque en',
+          'France. Gratuit, ouvert, mondial.',
+          '',
+          'Le Minitel resiste : il reste',
+          'plus simple, plus fiable,',
+          'et son modèle de facturation',
+          'à la minute est dejà rode.',
+          '',
+          'Mais les internautes augmentent',
+          'chaque annee. Le combat est inegal.',
+          '',
+          '1999 : France Telecom lance',
+          'le Minitel sur internet — trop tard.',
+        ],
+      },
+    ],
   },
   {
     id: 5,
     yearLabel: '2012',
     displayDate: '30 juin 2012',
-    title: 'EXTINCTION\nDU RÉSEAU',
-    lines: [
-      'À minuit, France Télécom coupe',
-      'les derniers serveurs Télétel.',
-      '',
-      'Après 38 ans de service,',
-      '9 millions de terminaux déployés',
-      'et plus de 26 000 services créés,',
-      'le Minitel s\'éteint définitivement.',
-      '',
-      'Il aura précédé Amazon, Google',
-      'et Facebook de plus de 10 ans.',
-      '',
-      '> FIN DE SESSION',
-      '> CONNEXION TERMINÉE_',
+    phase: 'modern',
+    pages: [
+      {
+        title: 'EXTINCTION\nDU RESEAU',
+        lines: [
+          'À minuit, France Telecom coupe',
+          'les derniers serveurs Teletel.',
+          '',
+          'Après 38 ans de service,',
+          '9 millions de terminaux deployes',
+          'et plus de 26 000 services crees,',
+          'le Minitel s\'eteint definitivement.',
+          '',
+          'Il aura precede Amazon, Google',
+          'et Facebook de plus de 10 ans.',
+          '',
+          '> FIN DE SESSION',
+          '> CONNEXION TERMINEE_',
+        ],
+      },
     ],
-    phase: 'mono',
   },
 ]
 
+// ── Données dérivées ───────────────────────────────────────────
+// Liste plate de toutes les pages pour le scroll
+const FLAT_PAGES = CHAPTERS.flatMap((ch, chIdx) =>
+  ch.pages.map((pg, pgIdx) => ({
+    id: `${ch.id}-${pgIdx}`,
+    chapterIdx: chIdx,
+    pageInChapter: pgIdx,
+    totalPagesInChapter: ch.pages.length,
+    yearLabel: ch.yearLabel,
+    displayDate: ch.displayDate,
+    phase: ch.phase,
+    title: pg.title,
+    lines: pg.lines,
+  }))
+)
+
+// Index (dans FLAT_PAGES) de la première page de chaque chapitre
+const CHAPTER_START = CHAPTERS.map((ch) =>
+  FLAT_PAGES.findIndex((p) => p.chapterIdx === CHAPTERS.indexOf(ch))
+)
+
+// Index de la première page modern (pour l'animation de vignette au scroll)
+const MODERN_FLAT_IDX = FLAT_PAGES.findIndex((p) => p.phase === 'modern')
+
 // ── CRT Overlay ────────────────────────────────────────────────
-function CRTOverlay({ phase }) {
+function CRTOverlay({ phase, overlayRef }) {
   const showFlicker = phase === 'mono' || phase === 'color'
   return (
-    <div className="crt-overlay" aria-hidden="true">
+    <div className={`crt-overlay phase-${phase}`} ref={overlayRef} aria-hidden="true">
       <div className="crt-scanlines" />
       <div className="crt-vignette" />
       {showFlicker && <div className="crt-glow" />}
       {showFlicker && <div className="crt-flicker" />}
-      {/* Grain animé — feTurbulence avec seed qui change en continu */}
+      {/* Grain anime — feTurbulence avec seed qui change en continu */}
       <svg className="crt-grain" xmlns="http://www.w3.org/2000/svg">
         <filter id="grain-filter" x="0%" y="0%" width="100%" height="100%">
           <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="3" stitchTiles="stitch">
@@ -172,42 +252,56 @@ function CRTOverlay({ phase }) {
 }
 
 // ── Top Navigation ─────────────────────────────────────────────
-function TopNav({ currentIdx, total, phase, onShowAll }) {
+function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter, phase, onShowAll }) {
+  if (phase === 'modern') {
+    return (
+      <nav className="top-nav--modern">
+        <button className="burger-btn" onClick={onShowAll} aria-label="Menu">
+          <span />
+          <span />
+          <span />
+        </button>
+      </nav>
+    )
+  }
+
   return (
     <nav className={`top-nav phase-${phase}`}>
       <span className="page-counter">
-        <span className="counter-label">Page</span>
-        <span className="counter-num">{currentIdx + 1}/{total}</span>
+        <span className="counter-label">Chapitre</span>
+        <span className="counter-num">{chapterIdx + 1}/{totalChapters}</span>
+        {totalPagesInChapter > 1 && (
+          <span className="counter-subpage">{pageInChapter + 1}/{totalPagesInChapter}</span>
+        )}
       </span>
       <button className="all-pages-btn" onClick={onShowAll}>
-        Toute les pages
+        Toutes les pages
       </button>
     </nav>
   )
 }
 
 // ── Timeline ───────────────────────────────────────────────────
-function Timeline({ pages, currentIdx, phase, onNavigate }) {
+function Timeline({ chapters, currentChapterIdx, phase, onNavigate }) {
   const timelineRef = useRef(null)
 
   useEffect(() => {
     const container = timelineRef.current
     const el = container?.querySelector('.active')
     if (!container || !el) return
-    // Centre la touche active dans le carousel
     const scrollLeft = el.offsetLeft - container.clientWidth / 2 + el.offsetWidth / 2
     container.scrollTo({ left: scrollLeft, behavior: 'instant' })
-  }, [currentIdx])
+  }, [currentChapterIdx])
 
   return (
     <div className={`timeline phase-${phase}`} ref={timelineRef}>
-      {pages.map((p, i) => (
+      {chapters.map((ch, i) => (
         <button
-          key={p.id}
-          className={`timeline-item${i === currentIdx ? ' active' : ''}`}
-          onClick={() => onNavigate(i)}
+          key={ch.id}
+          className={`timeline-item${i === currentChapterIdx ? ' active' : ''}`}
+          onClick={() => onNavigate(CHAPTER_START[i])}
         >
-          {p.yearLabel}
+          {ch.yearLabel}
         </button>
       ))}
     </div>
@@ -242,7 +336,7 @@ function PageContent({ page, isActive }) {
   const timersRef = useRef([])
   const intervalRef = useRef(null)
 
-  // Date → Titre → Lignes — compteur unifié
+  // Date → Titre → Lignes — compteur unifie
   const dateLength  = page.displayDate ? page.displayDate.length : 0
   const titleLength = page.title.length
 
@@ -265,6 +359,12 @@ function PageContent({ page, isActive }) {
     setRevealedChars(0)
 
     if (!isActive) return
+
+    // Phase moderne (2012) : pas d'effet machine à écrire, affichage immédiat
+    if (page.phase === 'modern') {
+      setRevealedChars(totalChars)
+      return
+    }
 
     const t0 = setTimeout(() => {
       let count = 0
@@ -312,11 +412,6 @@ function PageContent({ page, isActive }) {
           <span className="cursor cursor--typing">█</span>
         )}
       </h1>
-      {page.subtitle && (
-        <h2 className="page-subtitle">
-          {page.subtitle}
-        </h2>
-      )}
 
       <div className="page-body">
         {page.lines.map((line, i) => {
@@ -359,7 +454,7 @@ function PageContent({ page, isActive }) {
           )
         })}
 
-        {allRevealed && isActive && page.phase !== 'intro' && (
+        {allRevealed && isActive && page.phase !== 'intro' && page.phase !== 'modern' && (
           <span className="cursor">█</span>
         )}
       </div>
@@ -368,30 +463,33 @@ function PageContent({ page, isActive }) {
 }
 
 // ── All Pages Overlay ──────────────────────────────────────────
-function AllPagesOverlay({ pages, currentIdx, onNavigate, onClose }) {
+function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClose }) {
   return (
-    <div className="all-pages-overlay" onClick={onClose}>
+    <div className={`all-pages-overlay phase-${phase}`} onClick={onClose}>
       <div className="all-pages-inner" onClick={(e) => e.stopPropagation()}>
         <div className="all-pages-header">
-          <span>NAVIGATION — {pages.length} PAGES</span>
+          <span>NAVIGATION — {chapters.length} CHAPITRES</span>
           <button className="close-btn" onClick={onClose}>
             ✕
           </button>
         </div>
 
-        {pages.map((p, i) => (
+        {chapters.map((ch, i) => (
           <button
-            key={p.id}
-            className={`all-pages-item${i === currentIdx ? ' active' : ''}`}
+            key={ch.id}
+            className={`all-pages-item${i === currentChapterIdx ? ' active' : ''}`}
             onClick={() => {
-              onNavigate(i)
+              onNavigate(CHAPTER_START[i])
               onClose()
             }}
           >
-            <span className="item-year">{p.yearLabel}</span>
+            <span className="item-year">{ch.yearLabel}</span>
             <span className="item-title">
-              {p.title.replace('\n', ' ')}
+              {ch.pages[0].title.replace('\n', ' ')}
             </span>
+            {ch.pages.length > 1 && (
+              <span className="item-pages">{ch.pages.length}p</span>
+            )}
           </button>
         ))}
       </div>
@@ -401,22 +499,53 @@ function AllPagesOverlay({ pages, currentIdx, onNavigate, onClose }) {
 
 // ── Main App ───────────────────────────────────────────────────
 function App() {
-  const [currentIdx, setCurrentIdx] = useState(0)
+  const [currentFlatIdx, setCurrentFlatIdx] = useState(0)
   const [showOverlay, setShowOverlay] = useState(false)
   const sectionsRef = useRef([])
   const scrollContainerRef = useRef(null)
+  const crtOverlayRef = useRef(null)
 
-  const currentPhase = PAGES[currentIdx]?.phase ?? 'intro'
+  const currentPage    = FLAT_PAGES[currentFlatIdx]
+  const currentPhase   = currentPage?.phase ?? 'intro'
+  const currentChapterIdx = currentPage?.chapterIdx ?? 0
+
+  // Applique le translateY sur le CRT overlay selon la position de scroll
+  const applyCRTTransform = (scrollTop, h) => {
+    if (MODERN_FLAT_IDX < 0 || !crtOverlayRef.current) return
+    const modernStart = MODERN_FLAT_IDX * h
+    const progress = (scrollTop - (modernStart - h)) / h
+    const clamped = Math.max(0, Math.min(1, progress))
+    if (clamped >= 1 || clamped <= 0) {
+      crtOverlayRef.current.style.transform = ''
+    } else {
+      crtOverlayRef.current.style.transform = `translateY(-${clamped * h}px)`
+    }
+  }
 
   // Track which section is in view via scroll position
-  // (plus fiable que IntersectionObserver avec scroll-snap)
   useEffect(() => {
     const container = scrollContainerRef.current
     if (!container) return
 
     const onScroll = () => {
-      const idx = Math.round(container.scrollTop / container.clientHeight)
-      setCurrentIdx(Math.min(idx, PAGES.length - 1))
+      const h = container.clientHeight
+      const scrollTop = container.scrollTop
+      const idx = Math.round(scrollTop / h)
+      setCurrentFlatIdx(Math.min(idx, FLAT_PAGES.length - 1))
+      // Anime le CRT overlay entre la dernière page pré-modern et la page modern
+      if (MODERN_FLAT_IDX >= 0 && crtOverlayRef.current) {
+        const modernStart = MODERN_FLAT_IDX * h
+        const progress = (scrollTop - (modernStart - h)) / h
+        const clamped = Math.max(0, Math.min(1, progress))
+        if (clamped >= 1) {
+          // Laisse le CSS !important prendre le relais (pas d'inline style)
+          crtOverlayRef.current.style.transform = ''
+        } else if (clamped <= 0) {
+          crtOverlayRef.current.style.transform = ''
+        } else {
+          crtOverlayRef.current.style.transform = `translateY(-${clamped * h}px)`
+        }
+      }
     }
 
     container.addEventListener('scroll', onScroll, { passive: true })
@@ -430,22 +559,28 @@ function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const scrollToPage = (idx) => {
+  const scrollToFlatPage = (idx) => {
     const container = scrollContainerRef.current
     if (container) {
-      container.scrollTo({ top: idx * container.clientHeight, behavior: 'instant' })
+      const h = container.clientHeight
+      const scrollTop = idx * h
+      container.scrollTo({ top: scrollTop, behavior: 'instant' })
+      setCurrentFlatIdx(Math.min(idx, FLAT_PAGES.length - 1))
+      applyCRTTransform(scrollTop, h)
     }
   }
 
   return (
     <div className="app">
       {/* CRT visual effect */}
-      <CRTOverlay phase={currentPhase} />
+      <CRTOverlay phase={currentPhase} overlayRef={crtOverlayRef} />
 
       {/* Top bar */}
       <TopNav
-        currentIdx={currentIdx}
-        total={PAGES.length}
+        chapterIdx={currentChapterIdx}
+        totalChapters={CHAPTERS.length}
+        pageInChapter={currentPage?.pageInChapter ?? 0}
+        totalPagesInChapter={currentPage?.totalPagesInChapter ?? 1}
         phase={currentPhase}
         onShowAll={() => setShowOverlay(true)}
       />
@@ -453,33 +588,33 @@ function App() {
       {/* Navigation overlay */}
       {showOverlay && (
         <AllPagesOverlay
-          pages={PAGES}
-          currentIdx={currentIdx}
-          onNavigate={scrollToPage}
+          chapters={CHAPTERS}
+          currentChapterIdx={currentChapterIdx}
+          phase={currentPhase}
+          onNavigate={scrollToFlatPage}
           onClose={() => setShowOverlay(false)}
         />
       )}
 
       {/* Scrollable content */}
       <div className="scroll-container" ref={scrollContainerRef}>
-        {PAGES.map((page, i) => (
+        {FLAT_PAGES.map((page, i) => (
           <section
             key={page.id}
-            data-id={page.id}
             className={`page-section phase-${page.phase}`}
             ref={(el) => (sectionsRef.current[i] = el)}
           >
-            <PageContent page={page} isActive={currentIdx === i} />
+            <PageContent page={page} isActive={currentFlatIdx === i} />
           </section>
         ))}
       </div>
 
       {/* Bottom timeline */}
       <Timeline
-        pages={PAGES}
-        currentIdx={currentIdx}
+        chapters={CHAPTERS}
+        currentChapterIdx={currentChapterIdx}
         phase={currentPhase}
-        onNavigate={scrollToPage}
+        onNavigate={scrollToFlatPage}
       />
     </div>
   )
