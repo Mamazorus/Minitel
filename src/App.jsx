@@ -349,7 +349,7 @@ const CHAPTERS = [
           'Sa disparition marque moins une défaite technologique qu\'un choix de société. Le Web, ouvert et gratuit, l\'a emporté. Mais pendant trois décennies, le Minitel avait déjà inventé ce que le monde entier allait découvrir après lui.',
           '',
           '« Usagers et prestataires préféraient le laisser mourir en douceur… »',
-          ', Gonzalez & Jouve, Flux, 2002',
+          '- Gonzalez & Jouve, Flux, 2002',
           '',
           '> FIN DE SESSION',
           '> CONNEXION TERMINEE_',
