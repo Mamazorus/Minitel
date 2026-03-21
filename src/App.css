@@ -513,23 +513,32 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-  background: none;
-  border: none;
+  gap: 4px;
+  background: #c0c0c0;
+  border-top:    2px solid #ffffff;
+  border-left:   2px solid #ffffff;
+  border-right:  2px solid #808080;
+  border-bottom: 2px solid #808080;
   cursor: pointer;
-  padding: 6px;
+  padding: 6px 8px;
+}
+
+.burger-btn:active {
+  border-top:    2px solid #808080;
+  border-left:   2px solid #808080;
+  border-right:  2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
 }
 
 .burger-btn span {
   display: block;
-  width: 22px;
+  width: 18px;
   height: 2px;
-  background: rgba(0, 0, 0, 0.45);
-  transition: background 0.2s;
+  background: #000000;
 }
 
 .burger-btn:hover span {
-  background: rgba(0, 0, 0, 0.9);
+  background: #000000;
 }
 
 .timeline.phase-modern .timeline-item {
