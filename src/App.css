@@ -582,22 +582,22 @@
 
 .page-content.phase-epilogue .page-title {
   font-family: 'Minitel', 'VT323', 'Courier New', monospace;
-  font-size: clamp(1.75rem, 6vw, 2.1rem);
+  font-size: 1rem;
   color: #666;
   letter-spacing: 0.04em;
 }
 
 .page-content.phase-epilogue .text-line {
   font-family: 'Minitel', 'VT323', 'Courier New', monospace;
-  font-size: clamp(1.18rem, 4vw, 1.42rem);
+  font-size: 0.78rem;
   color: #555;
-  line-height: 1.35;
+  line-height: 1.5;
 }
 
 .page-content.phase-epilogue .cursor {
   color: #555;
   font-family: 'Minitel', 'VT323', monospace;
-  font-size: clamp(1.18rem, 4vw, 1.42rem);
+  font-size: 0.78rem;
 }
 
 /* ─── TIMELINE — TOUCHES MINITEL ────────────────────────────── */
@@ -616,6 +616,9 @@
      puissent être scrollés jusqu'au centre */
   padding: 0 calc(50% - 30px);
   overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
   scrollbar-width: none;
   background: transparent;
 }
