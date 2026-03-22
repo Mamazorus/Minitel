@@ -18,6 +18,33 @@ const COLOR_MAP = {
 // Chaque chapitre a une date et peut contenir plusieurs pages.
 // Le scroll avance page par page ; la timeline reste sur la date du chapitre.
 const CHAPTERS = [
+  // ── INTRODUCTION ──────────────────────────────────────────────
+  {
+    id: 'intro',
+    yearLabel: '*',
+    displayDate: 'HISTOIRE DU NUMERIQUE',
+    phase: 'mono',
+    pages: [
+      {
+        title: 'MINITEL\n1982 - 2012',
+        lines: [
+          'Vous vous apprêtez à découvrir',
+          'l\'histoire du premier réseau',
+          'de services en ligne grand public',
+          'au monde.',
+          '',
+          'Trente ans avant les réseaux sociaux,',
+          'vingt ans avant Amazon,',
+          'la France avait déjà tout inventé.',
+          '',
+          'Scroll pour commencer.',
+          '',
+          '[SUITE]',
+        ],
+      },
+    ],
+  },
+
   // ── PARTIE 1, CONTEXTE (1977) ─────────────────────────────────
   {
     id: 'contexte',
@@ -30,7 +57,7 @@ const CHAPTERS = [
         lines: [
           'Nous sommes en 1977.',
           '',
-          'Pendant que les États-Unis bâtissent',
+          'Pendant que les Etats-Unis bâtissent',
           'les fondations d\'Internet,',
           'la France accuse un retard inquiétant',
           'en matière de micro-informatique.',
@@ -406,10 +433,11 @@ function CRTOverlay({ phase, overlayRef }) {
 }
 
 // ── Top Navigation ─────────────────────────────────────────────
-function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter, phase, onShowAll }) {
+function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter, phase, onShowAll, onRestart }) {
   if (phase === 'modern') {
     return (
       <nav className="top-nav--modern">
+        <button className="restart-btn restart-btn--modern" onClick={onRestart} aria-label="Retour au début">{'<<'}</button>
         <button className="burger-btn" onClick={onShowAll} aria-label="Menu">
           <span />
           <span />
@@ -421,6 +449,7 @@ function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter,
 
   return (
     <nav className={`top-nav phase-${phase}`}>
+      <button className="restart-btn" onClick={onRestart} aria-label="Retour au début">{'<<'}</button>
       <span className="page-counter">
         <span className="counter-label">Chapitre</span>
         <span className="counter-num">{chapterIdx + 1}/{totalChapters}</span>
@@ -624,7 +653,7 @@ function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClo
         <div className="all-pages-header">
           <span>NAVIGATION — {chapters.length} CHAPITRES</span>
           <button className="close-btn" onClick={onClose}>
-            ✕
+            X
           </button>
         </div>
 
@@ -774,6 +803,13 @@ function App() {
 
   const handleBootComplete = () => setShowBoot(false)
 
+  const handleRestart = () => {
+    scrollToFlatPage(0)
+    setShowBoot(false)
+    setFadeOut(false)
+    setShowScene(true)
+  }
+
   return (
     <>
       {/* ── Scène 3D en overlay ── */}
@@ -804,6 +840,7 @@ function App() {
           totalPagesInChapter={currentPage?.totalPagesInChapter ?? 1}
           phase={currentPhase}
           onShowAll={() => setShowOverlay(true)}
+          onRestart={handleRestart}
         />
 
         {showOverlay && (
