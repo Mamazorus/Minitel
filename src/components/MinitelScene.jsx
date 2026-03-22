@@ -72,7 +72,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     )
 
     const handleWheel = (e) => {
-      scrollTarget.current += e.deltaY * 0.00012
+      scrollTarget.current += e.deltaY * 0.00025
       scrollTarget.current = Math.max(0, Math.min(1, scrollTarget.current))
     }
 
@@ -81,7 +81,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     const handleTouchMove = (e) => {
       const delta = touchStartY - e.touches[0].clientY
       touchStartY = e.touches[0].clientY
-      scrollTarget.current += delta * 0.00024
+      scrollTarget.current += delta * 0.0005
       scrollTarget.current = Math.max(0, Math.min(1, scrollTarget.current))
     }
 
