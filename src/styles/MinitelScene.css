@@ -11,29 +11,52 @@
   height: 100vh;
 }
 
-/* ── Navbar flottante pill ───────────────────────────────────── */
-.scene-nav {
+/* ── Backdrop ────────────────────────────────────────────────── */
+.scene-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.scene-menu-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Wrapper extensible ──────────────────────────────────────── */
+.scene-nav-wrapper {
   position: fixed;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  gap: 0;
-  height: 52px;
-  padding: 0 8px 0 20px;
+  z-index: 25;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
+  overflow: hidden;
+  max-width: calc(100vw - 32px);
+  transition: none;
+}
+
+/* ── Barre navbar ────────────────────────────────────────────── */
+.scene-nav {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 8px 0 20px;
   white-space: nowrap;
 }
 
-/* Logo */
 .scene-nav__logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-shrink: 0;
   padding-right: 20px;
 }
 
@@ -45,12 +68,10 @@
   letter-spacing: -0.2em;
 }
 
-/* Liens centre */
 .scene-nav__links {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 24px;
+  padding: 0 16px;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   height: 100%;
@@ -63,11 +84,11 @@
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 0.82rem;
   font-weight: 400;
-  letter-spacing: 0.01em;
-  padding: 6px 14px;
+  padding: 6px 10px;
   border-radius: 999px;
   cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
 }
 
 .scene-nav__link:hover {
@@ -75,11 +96,10 @@
   background: rgba(255, 255, 255, 0.07);
 }
 
-/* Bouton pill outlined */
 .scene-nav__cta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-shrink: 0;
   margin-left: 8px;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -87,7 +107,6 @@
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.01em;
   padding: 0 20px;
   height: 36px;
   border-radius: 999px;
@@ -98,6 +117,192 @@
 .scene-nav__cta:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* Burger — caché par défaut */
+.scene-nav__burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.burger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 2px;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.28s ease;
+  transform-origin: center;
+}
+
+.burger-line.open:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+.burger-line.open:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+
+/* ── Contenu menu mobile ─────────────────────────────────────── */
+.scene-nav-menu {
+  display: none;
+  flex-direction: column;
+  padding: 8px 20px 24px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.scene-nav-menu__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.scene-nav-menu__link {
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  text-align: left;
+  padding: 12px 4px;
+  cursor: pointer;
+  letter-spacing: -0.02em;
+  transition: color 0.15s ease;
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.scene-nav-menu__link:last-child { border-bottom: none; }
+
+.scene-nav-menu__link:hover { color: #ffffff; }
+
+@keyframes link-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scene-nav-wrapper.open .scene-nav-menu__link {
+  animation: link-in 0.25s ease forwards;
+}
+
+.scene-nav-wrapper.open .scene-nav-menu__link:nth-child(1) { animation-delay: 0.18s; }
+.scene-nav-wrapper.open .scene-nav-menu__link:nth-child(2) { animation-delay: 0.24s; }
+.scene-nav-wrapper.open .scene-nav-menu__link:nth-child(3) { animation-delay: 0.30s; }
+.scene-nav-wrapper.open .scene-nav-menu__link:nth-child(4) { animation-delay: 0.36s; }
+.scene-nav-wrapper.open .scene-nav-menu__link:nth-child(5) { animation-delay: 0.42s; }
+.scene-nav-wrapper.open .scene-nav-menu__link:nth-child(6) { animation-delay: 0.48s; }
+.scene-nav-wrapper.open .scene-nav-menu__link:nth-child(7) { animation-delay: 0.54s; }
+
+.scene-nav-menu__divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 16px 0;
+  opacity: 0;
+}
+
+.scene-nav-menu__cta {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.scene-nav-menu__cta:hover { background: rgba(255, 255, 255, 0.12); }
+
+@keyframes fade-in {
+  to { opacity: 1; }
+}
+
+.scene-nav-wrapper.open .scene-nav-menu__divider {
+  animation: fade-in 0.25s ease forwards;
+  animation-delay: 0.62s;
+}
+
+.scene-nav-wrapper.open .scene-nav-menu__cta {
+  animation: link-in 0.25s ease forwards;
+  animation-delay: 0.68s;
+}
+
+/* ── Responsive tablette ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .scene-nav-wrapper { top: 14px; }
+  .scene-nav { height: 46px; padding: 0 6px 0 16px; }
+  .scene-nav__logo { padding-right: 12px; }
+  .scene-nav__logo-text { font-size: 0.95rem; }
+  .scene-nav__links { padding: 0 8px; }
+  .scene-nav__link { font-size: 0.72rem; padding: 5px 7px; }
+  .scene-nav__cta { font-size: 0.7rem; padding: 0 14px; height: 32px; }
+}
+
+/* ── Mobile : burger + extension ────────────────────────────── */
+@media (max-width: 480px) {
+  .scene-nav-wrapper {
+    top: 12px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+    max-width: none;
+    max-height: 52px;
+    /* Fermeture : max-height anime, border-radius attend la fin (0.45s) pour redevenir pill */
+    transition:
+      max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      border-radius 0s 0.45s;
+  }
+
+  .scene-nav-wrapper.open {
+    max-height: 620px;
+    border-radius: 26px;
+    /* Ouverture : border-radius instantané, max-height anime */
+    transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                border-radius 0s;
+  }
+
+  .scene-nav {
+    height: 52px;
+    justify-content: space-between;
+    padding: 0 14px 0 18px;
+  }
+
+  /* Masquer liens et CTA desktop */
+  .scene-nav__links { display: none; }
+  .scene-nav__cta   { display: none; }
+
+  /* Afficher burger */
+  .scene-nav__burger { display: flex; }
+
+  /* Afficher menu content */
+  .scene-nav-menu { display: flex; }
+
+  /* Contenu visible seulement quand ouvert */
+  .scene-nav-wrapper.open .scene-nav-menu {
+    opacity: 1;
+    transition: opacity 0.25s ease 0.15s;
+  }
+}
+
+/* ── Fondu noir avant transition ─────────────────────────────── */
+.scene-fade {
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
 }
 
 /* ── Progress bar ────────────────────────────────────────────── */

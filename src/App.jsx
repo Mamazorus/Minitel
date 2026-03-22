@@ -45,7 +45,35 @@ const CHAPTERS = [
     ],
   },
 
-  // ── PARTIE 1, CONTEXTE (1977) ─────────────────────────────────
+  // ── PARTIE 1, GENESE (1974) ──────────────────────────────────
+  {
+    id: 'genese',
+    yearLabel: '1974',
+    displayDate: '1974',
+    phase: 'mono',
+    pages: [
+      {
+        title: 'LE TIC-TAC\nDE 1974',
+        lines: [
+          'Salon SICOB, 1974.',
+          '',
+          'Un terminal est présenté :',
+          'le TIC-TAC',
+          ', Terminal Intégré Comportant',
+          '  Téléviseur et Appel au Clavier.',
+          '',
+          'L\'idée est révolutionnaire.',
+          'Fusionner télécoms et informatique',
+          'dans un seul objet.',
+          '',
+          'Le TIC-TAC ne décolle jamais.',
+          'Le concept, lui, survit.',
+        ],
+      },
+    ],
+  },
+
+  // ── PARTIE 2, CONTEXTE (1977) ─────────────────────────────────
   {
     id: 'contexte',
     yearLabel: '1977',
@@ -93,31 +121,13 @@ const CHAPTERS = [
     ],
   },
 
-  // ── PARTIE 2, GENESE (1974, 1983) ────────────────────────────
+  // ── LANCEMENT (1980, 1984) ─────────────────────────────────────
   {
-    id: 'genese',
-    yearLabel: '1974',
-    displayDate: '1974, 1983',
+    id: 'lancement',
+    yearLabel: '1980',
+    displayDate: '1980, 1984',
     phase: 'mono',
     pages: [
-      {
-        title: 'LE TIC-TAC\nDE 1974',
-        lines: [
-          'Salon SICOB, 1974.',
-          '',
-          'Un terminal est présenté :',
-          'le TIC-TAC',
-          ', Terminal Intégré Comportant',
-          '  Téléviseur et Appel au Clavier.',
-          '',
-          'L\'idée est révolutionnaire.',
-          'Fusionner télécoms et informatique',
-          'dans un seul objet.',
-          '',
-          'Le TIC-TAC ne décolle jamais.',
-          'Le concept, lui, survit.',
-        ],
-      },
       {
         title: 'VELIZY,\nLE LABORATOIRE',
         lines: [
@@ -138,16 +148,6 @@ const CHAPTERS = [
           '> 120 000 terminaux fin 1983',
         ],
       },
-    ],
-  },
-
-  // ── LANCEMENT (1982, 1984) ─────────────────────────────────────
-  {
-    id: 'lancement',
-    yearLabel: '1982',
-    displayDate: '1982, 1984',
-    phase: 'mono',
-    pages: [
       {
         title: 'LE TERMINAL\nGRATUIT',
         lines: [
@@ -809,13 +809,26 @@ function App() {
     }
   }
 
+  const targetChapterRef = useRef(0)
+
   const handleSceneComplete = () => {
     setFadeOut(true)
     setShowBoot(true)
     setTimeout(() => setShowScene(false), 700)
   }
 
-  const handleBootComplete = () => setShowBoot(false)
+  const handleSceneNavigate = (chapterIdx) => {
+    targetChapterRef.current = chapterIdx
+    handleSceneComplete()
+  }
+
+  const handleBootComplete = () => {
+    setShowBoot(false)
+    const target = targetChapterRef.current
+    if (target > 0) {
+      setTimeout(() => scrollToFlatPage(chapterStart[target] ?? 0), 0)
+    }
+  }
 
   const handleRestart = () => {
     scrollToFlatPage(0)
@@ -836,7 +849,7 @@ function App() {
           transition: 'opacity 0.7s ease',
           pointerEvents: fadeOut ? 'none' : 'auto',
         }}>
-          <MinitelScene onComplete={handleSceneComplete} />
+          <MinitelScene onComplete={handleSceneComplete} onNavigate={handleSceneNavigate} />
         </div>
       )}
 
