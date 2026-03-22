@@ -235,8 +235,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  flex-wrap: nowrap;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 4px 8px;
   padding: 6px clamp(66px, 7vw, 80px);
   font-family: 'Minitel', 'VT323', 'Courier New', monospace;
   font-size: clamp(0.58rem, 2vw, 0.72rem);
@@ -269,14 +269,25 @@
 
 .page-counter {
   opacity: 0.9;
-  order: 0;
+  order: 1;
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: row;
   column-gap: 0.4em;
   align-items: baseline;
   line-height: 1.3;
   white-space: nowrap;
+  padding-left: 8px;
+}
+
+@media (max-width: 456px) {
+  .page-counter {
+    order: 3;
+    flex: 0 0 auto;
+    padding-left: 0;
+    margin-left: auto;
+  }
 }
 
 .counter-label,
@@ -306,9 +317,7 @@
 .restart-btn:hover { opacity: 1; }
 
 .top-nav .restart-btn {
-  order: 3;
-  width: 100%;
-  text-align: left;
+  order: 0;
 }
 
 .html-back-btn {
@@ -338,6 +347,8 @@
   transition: opacity 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
+  order: 2;
+  margin-left: auto;
 }
 .all-pages-btn:hover { opacity: 1; }
 
