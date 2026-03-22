@@ -437,6 +437,13 @@ function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter,
   if (phase === 'modern') {
     return (
       <nav className="top-nav--modern">
+        <span className="page-counter">
+          <span className="counter-label">Chapitre</span>
+          <span className="counter-num">{chapterIdx + 1}/{totalChapters}</span>
+          {totalPagesInChapter > 1 && (
+            <span className="counter-subpage">{pageInChapter + 1}/{totalPagesInChapter}</span>
+          )}
+        </span>
         <button className="burger-btn" onClick={onShowAll} aria-label="Menu">
           <span />
           <span />
