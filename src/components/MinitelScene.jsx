@@ -8,10 +8,11 @@ export default function MinitelScene({ onComplete }) {
   const scrollTarget = useRef(0)
   const scrollCurrent = useRef(0)
   const completed = useRef(false)
+  const progressBarRef = useRef(null)
 
   useEffect(() => {
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x1a1a2e)
+    scene.background = new THREE.Color(0x0a0a0f)
 
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -48,7 +49,6 @@ export default function MinitelScene({ onComplete }) {
       scrollTarget.current = Math.max(0, Math.min(1, scrollTarget.current))
     }
 
-    // Support tactile mobile
     let touchStartY = 0
     const handleTouchStart = (e) => { touchStartY = e.touches[0].clientY }
     const handleTouchMove = (e) => {
@@ -80,7 +80,10 @@ export default function MinitelScene({ onComplete }) {
       scrollCurrent.current = lerp(scrollCurrent.current, scrollTarget.current, 0.06)
       const p = scrollCurrent.current
 
-      // Phase 1 (0 → 0.5) : orbite 360° autour du Minitel
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${p})`
+      }
+
       if (p <= 0.5) {
         const t = easeInOut(p / 0.5)
         const angle = t * Math.PI * 2
@@ -90,9 +93,7 @@ export default function MinitelScene({ onComplete }) {
           Math.cos(angle) * RADIUS
         )
         camera.lookAt(0, 0, 0)
-      }
-      // Phase 2 (0.5 → 1) : monte + zoom vers l'écran
-      else {
+      } else {
         const t = easeInOut((p - 0.5) / 0.5)
         camera.position.set(
           0,
@@ -102,7 +103,6 @@ export default function MinitelScene({ onComplete }) {
         camera.lookAt(0, 0, 0)
       }
 
-      // Déclenche la transition quand on arrive dans l'écran
       if (p >= 0.98 && !completed.current) {
         completed.current = true
         onComplete?.()
@@ -128,8 +128,26 @@ export default function MinitelScene({ onComplete }) {
   return (
     <div className="minitel-scene-container">
       <div ref={containerRef} className="canvas-container" />
-      <div className="scroll-hint">
-        <span>↓ SCROLL ↓</span>
+
+      <nav className="scene-nav">
+        <div className="scene-nav__logo">
+          <span className="scene-nav__logo-text">Minitel</span>
+          <div className="scene-nav__logo-divider" />
+          <span className="scene-nav__logo-year">1982 — 2012</span>
+        </div>
+
+        <button className="scene-nav__skip" onClick={() => onComplete?.()}>
+          Passer
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </nav>
+
+      <div className="scene-progress">
+        <div className="scene-progress__track">
+          <div className="scene-progress__bar" ref={progressBarRef} />
+        </div>
       </div>
     </div>
   )
