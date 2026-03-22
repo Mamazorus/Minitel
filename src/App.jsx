@@ -437,7 +437,6 @@ function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter,
   if (phase === 'modern') {
     return (
       <nav className="top-nav--modern">
-        <button className="restart-btn restart-btn--modern" onClick={onRestart} aria-label="Retour au début">{'<<'}</button>
         <button className="burger-btn" onClick={onShowAll} aria-label="Menu">
           <span />
           <span />
@@ -514,7 +513,7 @@ function ColorGridLine({ words }) {
 }
 
 // ── Page Content with typewriter reveal ────────────────────────
-function PageContent({ page, isActive }) {
+function PageContent({ page, isActive, onRestart }) {
   const [revealedChars, setRevealedChars] = useState(0)
   const timersRef = useRef([])
   const intervalRef = useRef(null)
@@ -581,6 +580,9 @@ function PageContent({ page, isActive }) {
 
   return (
     <div className={`page-content phase-${page.phase}`}>
+      {page.phase === 'modern' && onRestart && (
+        <button className="html-back-btn" onClick={onRestart}>&lt;&lt; Retour au debut</button>
+      )}
       {page.displayDate && (
         <div className="date-stamp">
           {page.displayDate.slice(0, dateCharsRevealed)}
@@ -651,9 +653,14 @@ function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClo
     <div className={`all-pages-overlay phase-${phase}`} onClick={onClose}>
       <div className="all-pages-inner" onClick={(e) => e.stopPropagation()}>
         <div className="all-pages-header">
-          <span>NAVIGATION — {chapters.length} CHAPITRES</span>
-          <button className="close-btn" onClick={onClose}>
-            X
+          <span>NAVIGATION - {chapters.length} CHAPITRES</span>
+          <button className="close-btn" onClick={onClose} aria-label="Fermer">
+            {phase === 'modern' ? (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            ) : 'X'}
           </button>
         </div>
 
@@ -865,7 +872,7 @@ function App() {
               className={`page-section phase-${page.phase}`}
               ref={(el) => (sectionsRef.current[i] = el)}
             >
-              <PageContent page={page} isActive={currentFlatIdx === i && !showScene && !showBoot} />
+              <PageContent page={page} isActive={currentFlatIdx === i && !showScene && !showBoot} onRestart={handleRestart} />
             </section>
           ))}
         </div>

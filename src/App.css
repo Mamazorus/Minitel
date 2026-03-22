@@ -310,13 +310,19 @@
 }
 .restart-btn:hover { opacity: 1; }
 
-.restart-btn--modern {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 1.1rem;
-  color: rgba(0, 0, 0, 0.45);
-  margin-right: 8px;
+.html-back-btn {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 8px;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1rem;
+  color: #0000ee;
+  text-decoration: underline;
+  cursor: pointer;
 }
-.restart-btn--modern:hover { color: rgba(0, 0, 0, 0.9); }
+.html-back-btn:hover { color: #551a8b; }
 
 .all-pages-btn {
   background: none;
@@ -563,11 +569,98 @@
   gap: 8px;
 }
 
+/* ─── PHASE: WEB (2001) — style site early 2000s ───────────── */
+
+.page-section.phase-web {
+  background: #d4d0c8;
+  padding: 64px 8px 8px 8px;
+}
+
+.crt-overlay.phase-web {
+  transform: translateY(-100vh) !important;
+}
+
+.page-content.phase-web .date-stamp {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 0.7rem;
+  color: #444444;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 1;
+  margin-bottom: 2px;
+}
+
+.page-content.phase-web .page-title {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #003399;
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-shadow: none;
+  margin-bottom: 6px;
+  border-bottom: 2px solid #003399;
+  padding-bottom: 4px;
+}
+
+.page-content.phase-web .text-line {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 0.75rem;
+  color: #000000;
+  line-height: 1.6;
+  text-shadow: none;
+}
+
+.page-content.phase-web .cursor {
+  color: #003399;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 0.75rem;
+}
+
+.timeline.phase-web .timeline-item {
+  background: #d4d0c8;
+  border-top:    1px solid #ffffff;
+  border-left:   1px solid #ffffff;
+  border-right:  1px solid #808080;
+  border-bottom: 1px solid #808080;
+  box-shadow: none;
+  color: #000000;
+  font-family: Verdana, Arial, sans-serif;
+  border-radius: 0;
+}
+
+.timeline.phase-web .timeline-item.active {
+  color: #003399;
+  font-weight: bold;
+  background: #d4d0c8;
+  border-top:    1px solid #808080;
+  border-left:   1px solid #808080;
+  border-right:  1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  box-shadow: none;
+  transform: none;
+  text-shadow: none;
+}
+
+.timeline.phase-web .timeline-item:hover:not(.active) {
+  color: #003399;
+  box-shadow: none;
+}
+
+.timeline.phase-web {
+  background: #d4d0c8;
+  border-top: 2px solid #ffffff;
+}
+
 /* ─── PHASE: MODERN (2012) — style "début d'internet" ──────── */
 
 .page-section.phase-modern {
   background: #ffffff;
-  padding: 8px 8px 8px 8px;
+  padding: 8px;
+}
+
+.timeline.phase-modern {
+  display: none;
 }
 
 .page-content.phase-modern .date-stamp {
@@ -612,7 +705,6 @@
   right: 8px;
   z-index: 100;
   display: flex;
-  justify-content: flex-end;
   border-bottom: none;
   background: transparent;
 }
