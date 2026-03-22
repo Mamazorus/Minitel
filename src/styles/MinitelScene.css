@@ -3,7 +3,7 @@
   height: 100vh;
   overflow: hidden;
   position: relative;
-  background: #0a0a0f;
+  background: #000000;
 }
 
 .canvas-container {
@@ -11,99 +11,93 @@
   height: 100vh;
 }
 
-/* Radial ambient glow behind the model */
-.minitel-scene-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 60%, rgba(80, 60, 180, 0.18) 0%, transparent 70%),
-    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(0, 0, 0, 0.7) 0%, transparent 60%);
-  z-index: 1;
-}
-
-/* ── Navbar ──────────────────────────────────────────────────── */
+/* ── Navbar flottante pill ───────────────────────────────────── */
 .scene-nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 36px;
-  height: 64px;
-  /* subtle top gradient only */
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-  pointer-events: none;
+  gap: 0;
+  height: 52px;
+  padding: 0 8px 0 20px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
+/* Logo */
 .scene-nav__logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  padding-right: 20px;
 }
 
 .scene-nav__logo-text {
+  font-family: 'Minitel', 'VT323', monospace;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #ffffff;
+  letter-spacing: -0.2em;
+}
+
+/* Liens centre */
+.scene-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 24px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  height: 100%;
+}
+
+.scene-nav__link {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
-.scene-nav__logo-divider {
-  width: 1px;
-  height: 14px;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.scene-nav__logo-year {
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 0.7rem;
   font-weight: 400;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.01em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
-.scene-nav__skip {
-  pointer-events: auto;
+.scene-nav__link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Bouton pill outlined */
+.scene-nav__cta {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.6);
+  margin-left: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 8px 18px;
-  border-radius: 4px;
+  letter-spacing: 0.01em;
+  padding: 0 20px;
+  height: 36px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.scene-nav__skip:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.scene-nav__skip svg {
-  opacity: 0.6;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.scene-nav__skip:hover svg {
-  opacity: 1;
-  transform: translateX(2px);
+.scene-nav__cta:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.45);
 }
 
 /* ── Progress bar ────────────────────────────────────────────── */

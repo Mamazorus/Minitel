@@ -12,7 +12,7 @@ export default function MinitelScene({ onComplete }) {
 
   useEffect(() => {
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x0a0a0f)
+    scene.background = new THREE.Color(0x000000)
 
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -24,12 +24,35 @@ export default function MinitelScene({ onComplete }) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMappingExposure = 0.9
     containerRef.current.appendChild(renderer.domElement)
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.9))
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.5)
-    dirLight.position.set(5, 5, 5)
-    scene.add(dirLight)
+    // Ambiance quasi nulle — le modèle doit émerger du noir
+    scene.add(new THREE.AmbientLight(0xffffff, 0.06))
+
+    // Key light — haut droit, légèrement devant, chaud
+    const keyLight = new THREE.DirectionalLight(0xfff0e0, 3.5)
+    keyLight.position.set(4, 7, 3)
+    keyLight.castShadow = true
+    keyLight.shadow.mapSize.set(2048, 2048)
+    keyLight.shadow.camera.near = 0.5
+    keyLight.shadow.camera.far = 30
+    keyLight.shadow.radius = 8
+    keyLight.shadow.bias = -0.001
+    scene.add(keyLight)
+
+    // Fill light — bas gauche, très doux, froid (contraste chaud/froid)
+    const fillLight = new THREE.DirectionalLight(0xa0c0ff, 0.4)
+    fillLight.position.set(-4, -2, 2)
+    scene.add(fillLight)
+
+    // Rim light — derrière, pour la silhouette
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.6)
+    rimLight.position.set(0, 3, -5)
+    scene.add(rimLight)
 
     const loader = new GLTFLoader()
     loader.load(
@@ -38,6 +61,12 @@ export default function MinitelScene({ onComplete }) {
         const minitel = gltf.scene
         minitel.scale.set(4, 4, 4)
         minitel.position.set(0, -0.1, 0)
+        minitel.traverse((node) => {
+          if (node.isMesh) {
+            node.castShadow = true
+            node.receiveShadow = true
+          }
+        })
         scene.add(minitel)
       },
       undefined,
@@ -131,16 +160,18 @@ export default function MinitelScene({ onComplete }) {
 
       <nav className="scene-nav">
         <div className="scene-nav__logo">
-          <span className="scene-nav__logo-text">Minitel</span>
-          <div className="scene-nav__logo-divider" />
-          <span className="scene-nav__logo-year">1982 — 2012</span>
+          <span className="scene-nav__logo-text">ministory</span>
         </div>
 
-        <button className="scene-nav__skip" onClick={() => onComplete?.()}>
-          Passer
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+        <div className="scene-nav__links">
+          <button className="scene-nav__link">Histoire</button>
+          <button className="scene-nav__link">Le modèle</button>
+          <button className="scene-nav__link">Héritage</button>
+          <button className="scene-nav__link">1982 — 2012</button>
+        </div>
+
+        <button className="scene-nav__cta" onClick={() => onComplete?.()}>
+          Explorer
         </button>
       </nav>
 
