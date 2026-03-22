@@ -17,7 +17,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     scene.background = new THREE.Color(0x000000)
 
     const camera = new THREE.PerspectiveCamera(
-      75,
+      65,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
@@ -106,10 +106,10 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     const FADE_START = 0.84   // début du fondu noir
     const FADE_END   = 0.96   // entièrement noir → transition
 
-    const RADIUS = 4.2
+    const RADIUS = 3.7
 
     // Position de départ : directement en face
-    camera.position.set(0, 1.8, RADIUS)
+    camera.position.set(0, 1.6, RADIUS)
     camera.lookAt(0, 0.2, 0)
 
     const animate = () => {
@@ -140,7 +140,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
         const t = easeInOut(p / ORBIT_END)
         // Démarre en face (2*PI = 0), fait un tour complet, revient en face (0)
         const angle = lerp(Math.PI * 2, 0, t)
-        const camY  = lerp(1.8, 0.9, t)   // descend progressivement pendant l'orbite
+        const camY  = lerp(1.6, 0.9, t)   // descend progressivement pendant l'orbite
         const lookY = lerp(0.2, 0.35, t)
 
         camera.position.set(Math.sin(angle) * RADIUS, camY, Math.cos(angle) * RADIUS)
