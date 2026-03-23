@@ -894,6 +894,14 @@ function App() {
       audioRef.current.play().catch(e => console.warn('Audio play failed:', e))
       setAudioStarted(true)
     }
+    // Débloquer les autres sons sur iOS Safari (play+pause pendant le geste utilisateur)
+    ;[startAudioRef, clickAudioRef].forEach(ref => {
+      if (!ref.current) return
+      ref.current.play().then(() => {
+        ref.current.pause()
+        ref.current.currentTime = 0
+      }).catch(() => {})
+    })
   }
 
   const toggleMute = () => {
