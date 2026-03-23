@@ -137,7 +137,7 @@
 .page-section.phase-intro    { background: #000000; }
 .page-section.phase-mono     { background: #0a0a0a; }
 .page-section.phase-color    { background: #000080; }
-.page-section.phase-epilogue { background: #070707; }
+.page-section.phase-epilogue { background: #000000; }
 .page-section.phase-modern   { background: #14120f; padding-top: calc(5vh + 72px); padding-bottom: calc(5vh + 72px); }
 
 /* ─── CRT OVERLAY ───────────────────────────────────────────── */
@@ -397,6 +397,21 @@
 }
 .text-line.revealed   { opacity: 1; }
 .text-line.empty-line { min-height: 0.75em; }
+
+/* ─── ASCII ART BLOCK ───────────────────────────────────────── */
+
+.ascii-art-block {
+  font-family: 'Minitel', 'Courier New', monospace;
+  font-size: 0.65rem;
+  line-height: 1;
+  letter-spacing: -0.1em;
+  white-space: pre;
+  margin: 0.5em 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  display: block;
+}
 
 /* Blinking cursor (fin de frappe) */
 .cursor {
@@ -728,12 +743,12 @@
   font-family: 'Times New Roman', Times, serif;
   font-size: 1.6rem;
   font-weight: bold;
-  color: #000080;
+  color: #000000;
   letter-spacing: 0;
   line-height: 1.2;
   text-shadow: none;
   margin-bottom: 10px;
-  border-bottom: 1px solid #000080;
+  border-bottom: 1px solid #000000;
   padding-bottom: 4px;
 }
 
@@ -796,7 +811,7 @@
 }
 
 .timeline.phase-modern .timeline-item.active {
-  color: #000080;
+  color: #000000;
   background: #c0c0c0;
   border-top:    1px solid #808080;
   border-left:   1px solid #808080;
@@ -809,7 +824,7 @@
 }
 
 .timeline.phase-modern .timeline-item:hover:not(.active) {
-  color: #000080;
+  color: #000000;
   box-shadow: none;
 }
 
@@ -1044,12 +1059,12 @@
 
 /* ── Overlay phase color ── */
 .all-pages-overlay.phase-color .all-pages-inner {
-  background: #000080;
+  background: #000000;
   border-color: rgba(255, 255, 0, 0.35);
   scrollbar-color: rgba(255,255,0,0.2) transparent;
 }
 .all-pages-overlay.phase-color .all-pages-header {
-  background: #000080;
+  background: #000000;
   border-bottom-color: rgba(255, 255, 0, 0.2);
   color: #ffff00;
   text-shadow: 0 0 8px rgba(255,255,0,0.45);

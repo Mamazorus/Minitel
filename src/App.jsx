@@ -146,6 +146,28 @@ const CHAPTERS = [
           'devient progressivement favorable.',
           '',
           '> 120 000 terminaux fin 1983',
+          '',
+          {
+            type: 'ascii-art',
+            color: '#eeffee',
+            holeColor: '#0a0a0a',
+            rows: [
+              '                          ████                    ',
+              '                 █◉    ██████████                 ',
+              '             █    ███████████████████             ',
+              '          ██████████████████◉███████████          ',
+              '               ████████████████████████           ',
+              '                █████████████████████             ',
+              '                  ████████████████████            ',
+              '                  ██████████████████████          ',
+              '                 ████████████████████             ',
+              '                 █████████████████████            ',
+              '                █████████████████████████         ',
+              '                    ██ █████                      ',
+            ],
+          },
+          '  ◉ SAINT-MALO  (1980)',
+          '                  ◉ VELIZY (1981)',
         ],
       },
       {
@@ -229,6 +251,33 @@ const CHAPTERS = [
           'De 120 000 à 6,5 millions',
           'de terminaux en dix ans.',
           '+146 % entre 1984 et 1985.',
+        ],
+      },
+      {
+        title: 'LA COURBE\nDE CROISSANCE',
+        lines: [
+          'Nombre de terminaux Minitel',
+          'en service (1983 — 2001)',
+          '',
+          {
+            type: 'ascii-art',
+            color: '#ffff00',
+            rows: [
+              '6,5M ┤            ▄██▄          ',
+              '     │          ▄██████▄        ',
+              '4M   ┤        ▄██████████▄      ',
+              '     │      ▄████████████████▄  ',
+              '2M   ┤    ▄████████████████████▄',
+              '     │  ▄██████████████████████▀',
+              '120k ┤▄██                        ',
+              '     └──┬────┬────┬────┬────┬──┐',
+              '       83   87   91   95   99  01',
+            ],
+          },
+          '',
+          'Pic : 6,5 millions en 1991.',
+          '1993 : première décroissance.',
+          'La même année qu\'apparaît le Web.',
         ],
       },
     ],
@@ -530,9 +579,11 @@ function PageContent({ page, isActive, onRestart }) {
   const titleLength = page.title.length
 
   // Virtual length per line (empty lines = 1 so cursor flows through)
-  const lineLengths = page.lines.map(l =>
-    typeof l === 'object' ? 1 : l === '' ? 1 : l.length
-  )
+  const lineLengths = page.lines.map(l => {
+    if (typeof l !== 'object') return l === '' ? 1 : l.length
+    if (l.type === 'ascii-art') return l.rows.length
+    return 1 // color-grid
+  })
   const totalLineChars = lineLengths.reduce((a, b) => a + b, 0)
   const lineOffsets = lineLengths.reduce((acc, _, i) => {
     acc.push(i === 0 ? 0 : acc[i - 1] + lineLengths[i - 1])
@@ -615,16 +666,58 @@ function PageContent({ page, isActive, onRestart }) {
 
           const isEmpty = line === ''
           const isColorGrid = typeof line === 'object' && line.type === 'color-grid'
+          const isAsciiArt  = typeof line === 'object' && line.type === 'ascii-art'
 
           let content
-          if (isColorGrid) {
+          if (isAsciiArt) {
+            const artColor  = line.color || '#00FF41'
+            const holeColor = line.holeColor || '#000000'
+            content = started ? (
+              <pre
+                className="ascii-art-block"
+                style={{ color: artColor }}
+                aria-hidden="true"
+              >
+                {line.rows.slice(0, charsIn).map((row, ri, arr) => {
+                  const parts = row.split('◉')
+                  return (
+                    <span key={ri}>
+                      {parts.map((part, pi) => (
+                        <span key={pi}>
+                          {pi > 0 && <span style={{ color: holeColor }}>◉</span>}
+                          {part}
+                        </span>
+                      ))}
+                      {ri < arr.length - 1 && '\n'}
+                    </span>
+                  )
+                })}
+              </pre>
+            ) : null
+          } else if (isColorGrid) {
             content = started ? <ColorGridLine words={line.words} /> : null
           } else if (isEmpty) {
             content = null
           } else {
-            content = (
+            const PHASE_BG = { mono: '#0a0a0a', color: '#000080', modern: '#14120f', intro: '#000000' }
+            const holeCol  = PHASE_BG[page.phase] || '#000000'
+            const displayed = line.slice(0, charsIn)
+            const parts     = displayed.split('◉')
+            content = parts.length > 1 ? (
               <span>
-                {line.slice(0, charsIn)}
+                {parts.map((part, pi) => (
+                  <span key={pi}>
+                    {pi > 0 && <span style={{ color: holeCol }}>◉</span>}
+                    {part}
+                  </span>
+                ))}
+                {isCurrentLine && page.phase !== 'intro' && (
+                  <span className="cursor cursor--typing">█</span>
+                )}
+              </span>
+            ) : (
+              <span>
+                {displayed}
                 {isCurrentLine && page.phase !== 'intro' && (
                   <span className="cursor cursor--typing">█</span>
                 )}
