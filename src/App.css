@@ -1063,7 +1063,7 @@
 .all-pages-overlay.phase-color .item-year { opacity: 0.45; }
 
 .item-year  { font-size: 0.85rem; opacity: 0.5; min-width: 62px; flex-shrink: 0; }
-.item-title { font-size: 0.95rem; line-height: 1.25; flex: 1; }
+.item-title { font-size: 0.9rem; line-height: 1.25; flex: 1; }
 .item-pages { font-size: 0.75rem; opacity: 0.4; flex-shrink: 0; }
 
 /* ── Overlay phase modern — style early web ── */
