@@ -3,14 +3,25 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import '../styles/MinitelScene.css'
 
-export default function MinitelScene({ onComplete, onNavigate }) {
+export default function MinitelScene({ onComplete, onNavigate, onStart, audioRef }) {
   const containerRef  = useRef(null)
   const fadeRef       = useRef(null)
   const scrollTarget  = useRef(0)
   const scrollCurrent = useRef(0)
   const completed     = useRef(false)
   const progressBarRef = useRef(null)
+  const startedRef    = useRef(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [started, setStarted] = useState(false)
+  const [fadingOut, setFadingOut] = useState(false)
+
+  const handleLandingClick = () => {
+    setFadingOut(true)
+    onStart?.()
+    // Unblock scroll immediately, remove overlay after fade
+    startedRef.current = true
+    setTimeout(() => setStarted(true), 600)
+  }
 
   useEffect(() => {
     const scene = new THREE.Scene()
@@ -72,6 +83,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     )
 
     const handleWheel = (e) => {
+      if (!startedRef.current) return
       scrollTarget.current += e.deltaY * 0.00025
       scrollTarget.current = Math.max(0, Math.min(1, scrollTarget.current))
     }
@@ -79,6 +91,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     let touchStartY = 0
     const handleTouchStart = (e) => { touchStartY = e.touches[0].clientY }
     const handleTouchMove = (e) => {
+      if (!startedRef.current) return
       const delta = touchStartY - e.touches[0].clientY
       touchStartY = e.touches[0].clientY
       scrollTarget.current += delta * 0.0005
@@ -157,6 +170,18 @@ export default function MinitelScene({ onComplete, onNavigate }) {
         camera.lookAt(0, lookY, 0)
       }
 
+      // Volume audio : augmente avec la proximité de la caméra
+      if (audioRef?.current && startedRef.current) {
+        let targetVol
+        if (p <= ORBIT_END) {
+          targetVol = lerp(0.15, 0.45, p / ORBIT_END)
+        } else {
+          const t = clamp01((p - ORBIT_END) / (FADE_END - ORBIT_END))
+          targetVol = lerp(0.45, 1.0, t)
+        }
+        audioRef.current.volume = targetVol
+      }
+
       renderer.render(scene, camera)
     }
 
@@ -180,6 +205,23 @@ export default function MinitelScene({ onComplete, onNavigate }) {
 
       {/* Fondu noir avant transition */}
       <div className="scene-fade" ref={fadeRef} />
+
+      {/* Écran d'arrivée — bloque l'interaction jusqu'au premier clic */}
+      {!started && (
+        <div
+          className={`scene-landing${fadingOut ? ' fading-out' : ''}`}
+          onClick={handleLandingClick}
+        >
+          <div className="scene-landing__content">
+            <p className="scene-landing__logo">MINISTORY</p>
+            <div className="scene-landing__separator" />
+            <p className="scene-landing__subtitle">Histoire du numérique français</p>
+            <p className="scene-landing__instruction">Cliquer puis scroller</p>
+            <p className="scene-landing__instruction">pour commencer l'expérience</p>
+            <p className="scene-landing__cta">[ ▶ COMMENCER ]</p>
+          </div>
+        </div>
+      )}
 
       {/* Backdrop — toujours dans le DOM, opacity pilotée par CSS */}
       <div

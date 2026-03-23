@@ -822,11 +822,87 @@ function CRTBoot({ onComplete }) {
 }
 
 // ── Main App ───────────────────────────────────────────────────
+// ── Bouton muet ────────────────────────────────────────────────
+function MuteButton({ isMuted, onToggle, phase, visible }) {
+  if (!visible) return null
+  return (
+    <button
+      className={`mute-btn phase-${phase}${isMuted ? ' muted' : ''}`}
+      onClick={onToggle}
+      aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
+    >
+      {isMuted ? '[ SON: OFF ]' : '[ SON: ON ]'}
+    </button>
+  )
+}
+
 function App() {
   // ── Scène 3D intro ──────────────────────────────────────────
   const [showScene, setShowScene] = useState(true)
   const [fadeOut, setFadeOut] = useState(false)
   const [showBoot, setShowBoot] = useState(false)
+
+  // ── Audio ───────────────────────────────────────────────────
+  const audioRef = useRef(null)
+  const startAudioRef = useRef(null)
+  const clickAudioRef = useRef(null)
+  const isMutedRef = useRef(false)
+  const [audioStarted, setAudioStarted] = useState(false)
+  const [isMuted, setIsMuted] = useState(false)
+
+  useEffect(() => {
+    const audio = new Audio('/sound-minitel.mp3')
+    audio.loop = true
+    audio.volume = 0.05
+    audio.preload = 'auto'
+    audioRef.current = audio
+
+    const startAudio = new Audio('/start-minitel.mp3')
+    startAudio.preload = 'auto'
+    startAudioRef.current = startAudio
+
+    const clickAudio = new Audio('/click-minitel.mp3')
+    clickAudio.preload = 'auto'
+    clickAudioRef.current = clickAudio
+
+    return () => {
+      audio.pause(); audio.src = ''
+      startAudio.pause(); startAudio.src = ''
+      clickAudio.src = ''
+    }
+  }, [])
+
+  // Délégation globale : joue le clic sur tout bouton de l'interface principale
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (isMutedRef.current) return
+      const btn = e.target.closest('button')
+      if (!btn) return
+      // Exclure la scène 3D et l'écran d'arrivée
+      if (btn.closest('.minitel-scene-container')) return
+      if (!clickAudioRef.current) return
+      const clone = clickAudioRef.current.cloneNode()
+      clone.volume = 0.75
+      clone.play().catch(() => {})
+    }
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [])
+
+  const handleAudioStart = () => {
+    if (audioRef.current && !audioStarted) {
+      audioRef.current.play().catch(e => console.warn('Audio play failed:', e))
+      setAudioStarted(true)
+    }
+  }
+
+  const toggleMute = () => {
+    const next = !isMuted
+    isMutedRef.current = next
+    if (audioRef.current) audioRef.current.muted = next
+    if (startAudioRef.current) startAudioRef.current.muted = next
+    setIsMuted(next)
+  }
 
   // ── Pagination dynamique selon la hauteur du viewport ────────
   const getMaxLines = () => window.innerHeight < 700 ? 7 : 12
@@ -898,6 +974,16 @@ function App() {
     return () => container.removeEventListener('scroll', onScroll)
   }, [flatPages, modernFlatIdx])
 
+  // Bloquer l'audio sur le chapitre 2012 (phase modern)
+  useEffect(() => {
+    if (!audioRef.current || !audioStarted) return
+    if (currentPhase === 'modern') {
+      audioRef.current.pause()
+    } else if (!isMuted) {
+      audioRef.current.play().catch(() => {})
+    }
+  }, [currentPhase, audioStarted])
+
   // Close overlay with Escape key
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') setShowOverlay(false) }
@@ -922,6 +1008,15 @@ function App() {
     setFadeOut(true)
     setShowBoot(true)
     setTimeout(() => setShowScene(false), 700)
+    // Volume de confort + son de démarrage CRT
+    if (audioRef.current) {
+      audioRef.current.volume = 0.9
+    }
+    if (startAudioRef.current) {
+      startAudioRef.current.muted = isMuted
+      startAudioRef.current.currentTime = 0
+      startAudioRef.current.play().catch(e => console.warn('Start audio failed:', e))
+    }
   }
 
   const handleSceneNavigate = (chapterIdx) => {
@@ -931,6 +1026,11 @@ function App() {
 
   const handleBootComplete = () => {
     setShowBoot(false)
+    // Stopper le son de démarrage s'il est encore en cours
+    if (startAudioRef.current) {
+      startAudioRef.current.pause()
+      startAudioRef.current.currentTime = 0
+    }
     const target = targetChapterRef.current
     if (target > 0) {
       setTimeout(() => scrollToFlatPage(chapterStart[target] ?? 0), 0)
@@ -956,7 +1056,12 @@ function App() {
           transition: 'opacity 0.7s ease',
           pointerEvents: fadeOut ? 'none' : 'auto',
         }}>
-          <MinitelScene onComplete={handleSceneComplete} onNavigate={handleSceneNavigate} />
+          <MinitelScene
+            onComplete={handleSceneComplete}
+            onNavigate={handleSceneNavigate}
+            onStart={handleAudioStart}
+            audioRef={audioRef}
+          />
         </div>
       )}
 
@@ -1010,6 +1115,13 @@ function App() {
           phase={currentPhase}
           onNavigate={scrollToFlatPage}
           chapterStart={chapterStart}
+        />
+
+        <MuteButton
+          isMuted={isMuted}
+          onToggle={toggleMute}
+          phase={currentPhase}
+          visible={audioStarted && currentPhase !== 'modern'}
         />
       </div>
     </>

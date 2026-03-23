@@ -979,6 +979,124 @@
 .timeline.phase-intro    .timeline-item:hover:not(.active),
 .timeline.phase-epilogue .timeline-item:hover:not(.active) { color: rgba(255, 255, 255, 0.5); }
 
+/* ─── BOUTON MUET ───────────────────────────────────────────── */
+
+.mute-btn {
+  position: fixed;
+  bottom: calc(5vh + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 110;
+  cursor: pointer;
+  font-family: 'Minitel', 'VT323', 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  padding: 4px 14px 6px;
+  background: transparent;
+  border: 1px solid rgba(238, 255, 238, 0.28);
+  color: rgba(238, 255, 238, 0.55);
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease, text-shadow 0.2s ease;
+  clip-path: polygon(6px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 6px);
+}
+
+.mute-btn:hover {
+  color: #eeffee;
+  border-color: rgba(238, 255, 238, 0.55);
+  text-shadow: 0 0 8px rgba(238, 255, 238, 0.35);
+}
+
+.mute-btn.muted {
+  color: rgba(238, 255, 238, 0.35);
+  border-color: rgba(238, 255, 238, 0.15);
+}
+
+/* Phase color */
+.mute-btn.phase-color {
+  border-color: rgba(255, 255, 0, 0.28);
+  color: rgba(255, 255, 0, 0.55);
+}
+.mute-btn.phase-color:hover {
+  color: #ffff00;
+  border-color: rgba(255, 255, 0, 0.6);
+  text-shadow: 0 0 8px rgba(255, 255, 0, 0.4);
+}
+.mute-btn.muted.phase-color {
+  color: rgba(255, 255, 0, 0.3);
+  border-color: rgba(255, 255, 0, 0.12);
+}
+
+/* Phase intro / epilogue */
+.mute-btn.phase-intro,
+.mute-btn.phase-epilogue {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.45);
+}
+.mute-btn.phase-intro:hover,
+.mute-btn.phase-epilogue:hover {
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.45);
+  text-shadow: none;
+}
+
+/* Phase modern (Windows 95) */
+.mute-btn.phase-modern {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.72rem;
+  background: #c0c0c0;
+  border-width: 2px;
+  border-style: solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-bottom-color: #808080;
+  border-right-color: #808080;
+  color: #000000;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+  clip-path: none;
+  padding: 3px 12px 4px;
+}
+.mute-btn.phase-modern:hover {
+  color: #000000;
+  text-shadow: none;
+}
+.mute-btn.muted.phase-modern,
+.mute-btn.phase-modern:active {
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+}
+
+/* Phase web (early 2000s) */
+.mute-btn.phase-web {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 0.72rem;
+  background: #d4d0c8;
+  border-width: 2px;
+  border-style: solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-bottom-color: #808080;
+  border-right-color: #808080;
+  color: #000000;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+  clip-path: none;
+  padding: 3px 12px 4px;
+}
+.mute-btn.phase-web:hover {
+  color: #000000;
+  text-shadow: none;
+}
+.mute-btn.muted.phase-web,
+.mute-btn.phase-web:active {
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+}
+
 /* ─── ALL PAGES OVERLAY ─────────────────────────────────────── */
 
 .all-pages-overlay {
