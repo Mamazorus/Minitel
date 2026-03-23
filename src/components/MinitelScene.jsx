@@ -32,7 +32,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     renderer.toneMappingExposure = 0.9
     containerRef.current.appendChild(renderer.domElement)
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.06))
+    scene.add(new THREE.AmbientLight(0xffffff, 0.01))
 
     const keyLight = new THREE.DirectionalLight(0xfff0e0, 3.5)
     keyLight.position.set(4, 7, 3)
