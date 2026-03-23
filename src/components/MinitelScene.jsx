@@ -109,7 +109,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
     const RADIUS = 4.7
 
     // Position de départ : directement en face
-    camera.position.set(0, 1.6, RADIUS)
+    camera.position.set(10, 10.9, RADIUS)
     camera.lookAt(0, 0.2, 0)
 
     const animate = () => {
@@ -140,7 +140,7 @@ export default function MinitelScene({ onComplete, onNavigate }) {
         const t = easeInOut(p / ORBIT_END)
         // Démarre en face (2*PI = 0), fait un tour complet, revient en face (0)
         const angle = lerp(Math.PI * 2, 0, t)
-        const camY  = lerp(1.8, 0.9, t)   // descend progressivement pendant l'orbite
+        const camY  = lerp(2.5, 0.9, t)   // descend progressivement pendant l'orbite
         const lookY = lerp(0.2, 0.35, t)
 
         camera.position.set(Math.sin(angle) * RADIUS, camY, Math.cos(angle) * RADIUS)
@@ -150,8 +150,8 @@ export default function MinitelScene({ onComplete, onNavigate }) {
       else {
         const t = easeInOut3(clamp01((p - ORBIT_END) / (FADE_END - ORBIT_END)))
         const camZ  = lerp(RADIUS, 1.0, t)
-        const camY  = lerp(0.9, 0.5, t)
-        const lookY = lerp(0.35, 0.5, t)
+        const camY  = lerp(0.9, 0.7, t)
+        const lookY = lerp(0.35, 0.7, t)
 
         camera.position.set(0, camY, camZ)
         camera.lookAt(0, lookY, 0)
