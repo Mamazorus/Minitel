@@ -694,6 +694,11 @@
 }
 
 /* Barre de navigation fixe style early web */
+@keyframes nav-slide-down {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+
 .top-nav--modern {
   position: fixed;
   top: 0;
@@ -707,6 +712,7 @@
   background: #c0c0c0;
   border-bottom: 2px solid #808080;
   border-top: 2px solid #ffffff;
+  animation: nav-slide-down 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Compteur de chapitre dans la nav moderne */
@@ -1177,27 +1183,27 @@
 
 /* ── Overlay phase color ── */
 .all-pages-overlay.phase-color .all-pages-inner {
-  background: #000000;
-  border-color: rgba(255, 255, 0, 0.35);
-  scrollbar-color: rgba(255,255,0,0.2) transparent;
+  background: #000080;
+  border-color: rgba(68, 136, 255, 0.5);
+  scrollbar-color: rgba(68,136,255,0.3) transparent;
 }
 .all-pages-overlay.phase-color .all-pages-header {
-  background: #000000;
-  border-bottom-color: rgba(255, 255, 0, 0.2);
+  background: #000070;
+  border-bottom-color: rgba(68, 136, 255, 0.3);
   color: #ffff00;
   text-shadow: 0 0 8px rgba(255,255,0,0.45);
 }
 .all-pages-overlay.phase-color .close-btn {
-  color: rgba(255,255,0,0.5);
+  color: rgba(255,255,0,0.6);
 }
 .all-pages-overlay.phase-color .close-btn:hover { color: #ffff00; }
 .all-pages-overlay.phase-color .all-pages-item {
-  color: rgba(255, 255, 255, 0.55);
-  border-bottom-color: rgba(255, 255, 0, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  border-bottom-color: rgba(68, 136, 255, 0.18);
 }
-.all-pages-overlay.phase-color .all-pages-item:hover  { background: rgba(255,255,0,0.06); color: #ffffff; }
-.all-pages-overlay.phase-color .all-pages-item.active { color: #ffff00; background: rgba(255,255,0,0.1); text-shadow: 0 0 8px rgba(255,255,0,0.4); }
-.all-pages-overlay.phase-color .item-year { opacity: 0.45; }
+.all-pages-overlay.phase-color .all-pages-item:hover  { background: rgba(68,136,255,0.15); color: #ffffff; }
+.all-pages-overlay.phase-color .all-pages-item.active { color: #ffff00; background: rgba(68,136,255,0.2); text-shadow: 0 0 8px rgba(255,255,0,0.4); }
+.all-pages-overlay.phase-color .item-year { opacity: 0.5; }
 
 .item-year  { font-size: 0.85rem; opacity: 0.5; min-width: 62px; flex-shrink: 0; }
 .item-title { font-size: 0.9rem; line-height: 1.25; flex: 1; }

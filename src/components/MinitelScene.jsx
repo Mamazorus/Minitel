@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import '../styles/MinitelScene.css'
 
-export default function MinitelScene({ onComplete, onNavigate, onStart, audioRef }) {
+export default function MinitelScene({ onComplete, onNavigate, onStart, audioRef, isMuted, onToggleMute }) {
   const containerRef  = useRef(null)
   const fadeRef       = useRef(null)
   const scrollTarget  = useRef(0)
@@ -221,6 +221,17 @@ export default function MinitelScene({ onComplete, onNavigate, onStart, audioRef
             <p className="scene-landing__cta">[ ▶ COMMENCER ]</p>
           </div>
         </div>
+      )}
+
+      {/* Bouton muet — visible après le landing */}
+      {started && (
+        <button
+          className={`scene-mute-btn${isMuted ? ' muted' : ''}`}
+          onClick={onToggleMute}
+          aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
+        >
+          {isMuted ? 'Son off' : 'Son on'}
+        </button>
       )}
 
       {/* Backdrop — toujours dans le DOM, opacity pilotée par CSS */}

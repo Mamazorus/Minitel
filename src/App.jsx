@@ -847,6 +847,7 @@ function App() {
   const startAudioRef = useRef(null)
   const clickAudioRef = useRef(null)
   const isMutedRef = useRef(false)
+  const currentPhaseRef = useRef('mono')
   const [audioStarted, setAudioStarted] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
 
@@ -875,7 +876,7 @@ function App() {
   // Délégation globale : joue le clic sur tout bouton de l'interface principale
   useEffect(() => {
     const handleClick = (e) => {
-      if (isMutedRef.current) return
+      if (isMutedRef.current || currentPhaseRef.current === 'modern') return
       const btn = e.target.closest('button')
       if (!btn) return
       // Exclure la scène 3D et l'écran d'arrivée
@@ -885,8 +886,8 @@ function App() {
       clone.volume = 0.75
       clone.play().catch(() => {})
     }
-    document.addEventListener('click', handleClick)
-    return () => document.removeEventListener('click', handleClick)
+    document.addEventListener('click', handleClick, { capture: true })
+    return () => document.removeEventListener('click', handleClick, { capture: true })
   }, [])
 
   const handleAudioStart = () => {
@@ -894,12 +895,15 @@ function App() {
       audioRef.current.play().catch(e => console.warn('Audio play failed:', e))
       setAudioStarted(true)
     }
-    // Débloquer les autres sons sur iOS Safari (play+pause pendant le geste utilisateur)
+    // Débloquer les autres sons sur iOS Safari (play+pause silencieux pendant le geste utilisateur)
     ;[startAudioRef, clickAudioRef].forEach(ref => {
       if (!ref.current) return
+      const vol = ref.current.volume
+      ref.current.volume = 0
       ref.current.play().then(() => {
         ref.current.pause()
         ref.current.currentTime = 0
+        ref.current.volume = vol
       }).catch(() => {})
     })
   }
@@ -938,6 +942,19 @@ function App() {
   const currentPage = flatPages[currentFlatIdx]
   const currentPhase = currentPage?.phase ?? 'intro'
   const currentChapterIdx = currentPage?.chapterIdx ?? 0
+
+  // Son de clic au changement de page par scroll
+  const prevFlatIdxRef = useRef(null)
+  useEffect(() => {
+    if (prevFlatIdxRef.current === null) { prevFlatIdxRef.current = currentFlatIdx; return }
+    if (prevFlatIdxRef.current === currentFlatIdx) return
+    prevFlatIdxRef.current = currentFlatIdx
+    if (!audioStarted || isMutedRef.current || currentPhaseRef.current === 'modern') return
+    if (!clickAudioRef.current) return
+    const clone = clickAudioRef.current.cloneNode()
+    clone.volume = 0.75
+    clone.play().catch(() => {})
+  }, [currentFlatIdx, audioStarted])
 
   // Applique le translateY sur le CRT overlay selon la position de scroll
   const applyCRTTransform = (scrollTop, h) => {
@@ -982,6 +999,9 @@ function App() {
     return () => container.removeEventListener('scroll', onScroll)
   }, [flatPages, modernFlatIdx])
 
+  // Sync de la ref de phase (pour les listeners stables)
+  useEffect(() => { currentPhaseRef.current = currentPhase }, [currentPhase])
+
   // Bloquer l'audio sur le chapitre 2012 (phase modern)
   useEffect(() => {
     if (!audioRef.current || !audioStarted) return
@@ -991,6 +1011,21 @@ function App() {
       audioRef.current.play().catch(() => {})
     }
   }, [currentPhase, audioStarted])
+
+  // Pause/reprise quand la page passe en arrière-plan (mobile)
+  useEffect(() => {
+    if (!audioStarted) return
+    const handleVisibility = () => {
+      if (!audioRef.current) return
+      if (document.hidden) {
+        audioRef.current.pause()
+      } else if (!isMutedRef.current && currentPhaseRef.current !== 'modern') {
+        audioRef.current.play().catch(() => {})
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [audioStarted])
 
   // Close overlay with Escape key
   useEffect(() => {
@@ -1050,6 +1085,12 @@ function App() {
     setShowBoot(false)
     setFadeOut(false)
     setShowScene(true)
+    // Couper l'audio pendant le landing screen
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.volume = 0.05
+    }
+    setAudioStarted(false)
   }
 
   return (
@@ -1069,6 +1110,8 @@ function App() {
             onNavigate={handleSceneNavigate}
             onStart={handleAudioStart}
             audioRef={audioRef}
+            isMuted={isMuted}
+            onToggleMute={toggleMute}
           />
         </div>
       )}
@@ -1129,7 +1172,7 @@ function App() {
           isMuted={isMuted}
           onToggle={toggleMute}
           phase={currentPhase}
-          visible={audioStarted && currentPhase !== 'modern'}
+          visible={audioStarted}
         />
       </div>
     </>
