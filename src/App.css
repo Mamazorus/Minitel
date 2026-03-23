@@ -870,18 +870,21 @@
 .timeline-item {
   flex-shrink: 0;
   min-width: 52px;
-  padding: 7px 10px 6px;
+  padding: 4px 10px 9px 7px;
   font-family: 'Minitel', 'VT323', monospace;
   font-size: 0.62rem;
   letter-spacing: 0.08em;
-  text-align: center;
+  text-align: left;
   white-space: nowrap;
   cursor: pointer;
   position: relative;
 
   /* Corps de la touche */
   background: linear-gradient(180deg, #181818 0%, #0e0e0e 100%);
-  border-radius: 3px;
+  border-radius: 0;
+
+  /* Coin haut-gauche coupé — forme touche clavier Minitel */
+  clip-path: polygon(8px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 8px);
 
   /* Bordures : effet 3D clavier */
   border-top:    1px solid rgba(238, 255, 238, 0.22);
@@ -889,13 +892,13 @@
   border-right:  1px solid rgba(238, 255, 238, 0.12);
   border-bottom: 3px solid rgba(60, 80, 60, 0.9);
 
-  /* Ombre portée + reflet interne */
-  box-shadow:
-    0 5px 10px rgba(0, 0, 0, 0.75),
-    inset 0 1px 0 rgba(238, 255, 238, 0.07);
+  /* Reflet interne (box-shadow inset fonctionne avec clip-path) */
+  box-shadow: inset 0 1px 0 rgba(238, 255, 238, 0.07);
+  /* Ombre portée via filter (respecte la forme du clip-path) */
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.75));
 
   color: rgba(238, 255, 238, 0.38);
-  transition: color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease, border-bottom-width 0.1s ease;
+  transition: color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease, border-bottom-width 0.1s ease;
 }
 
 /* Phase color */
@@ -904,7 +907,7 @@
   border-left:   1px solid rgba(255, 255, 0, 0.18);
   border-right:  1px solid rgba(255, 255, 0, 0.12);
   border-bottom: 3px solid rgba(80, 80, 0, 0.9);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 0, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 0, 0.06);
   color: rgba(255, 255, 255, 0.32);
 }
 .timeline.phase-intro    .timeline-item,
@@ -913,7 +916,7 @@
   border-left:   1px solid rgba(255, 255, 255, 0.09);
   border-right:  1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 3px solid rgba(40, 40, 40, 0.9);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.25);
 }
 
@@ -925,10 +928,8 @@
   border-left:   1px solid rgba(238, 255, 238, 0.35);
   border-right:  1px solid rgba(238, 255, 238, 0.25);
   border-bottom: 1px solid rgba(60, 80, 60, 0.9);
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.75),
-    inset 0 2px 4px rgba(0, 0, 0, 0.4),
-    0 0 8px rgba(238, 255, 238, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px rgba(238, 255, 238, 0.1));
   transform: translateY(2px);
   text-shadow: 0 0 8px rgba(238, 255, 238, 0.5);
 }
@@ -939,7 +940,8 @@
   border-left:   1px solid rgba(255, 255, 0, 0.35);
   border-right:  1px solid rgba(255, 255, 0, 0.25);
   border-bottom: 1px solid rgba(80, 80, 0, 0.9);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.75), inset 0 2px 4px rgba(0,0,0,0.4), 0 0 8px rgba(255,255,0,0.12);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.75)) drop-shadow(0 0 8px rgba(255,255,0,0.12));
   transform: translateY(2px);
   text-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
 }
@@ -947,14 +949,16 @@
 .timeline.phase-epilogue .timeline-item.active {
   color: #ffffff;
   border-bottom-width: 1px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.75), inset 0 2px 4px rgba(0,0,0,0.4);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.75));
   transform: translateY(2px);
 }
 
 /* ── Hover (non actif) ── */
 .timeline-item:hover:not(.active) {
   color: rgba(238, 255, 238, 0.75);
-  box-shadow: 0 5px 12px rgba(0,0,0,0.75), inset 0 1px 0 rgba(238,255,238,0.1), 0 0 6px rgba(238,255,238,0.07);
+  box-shadow: inset 0 1px 0 rgba(238,255,238,0.1);
+  filter: drop-shadow(0 5px 12px rgba(0,0,0,0.75)) drop-shadow(0 0 6px rgba(238,255,238,0.07));
 }
 .timeline.phase-color    .timeline-item:hover:not(.active) { color: rgba(255, 255, 255, 0.6); }
 .timeline.phase-intro    .timeline-item:hover:not(.active),
