@@ -4,14 +4,14 @@ import MinitelScene from './components/MinitelScene'
 
 // ── Minitel 8-color palette ────────────────────────────────────
 const COLOR_MAP = {
-  NOIR:    { display: '#333333', swatch: '#111111' },
-  ROUGE:   { display: '#ff4040', swatch: '#ff0000' },
-  VERT:    { display: '#00ff00', swatch: '#00ff00' },
-  JAUNE:   { display: '#ffff00', swatch: '#ffff00' },
-  BLEU:    { display: '#4488ff', swatch: '#0000ff' },
+  NOIR: { display: '#333333', swatch: '#111111' },
+  ROUGE: { display: '#ff4040', swatch: '#ff0000' },
+  VERT: { display: '#00ff00', swatch: '#00ff00' },
+  JAUNE: { display: '#ffff00', swatch: '#ffff00' },
+  BLEU: { display: '#4488ff', swatch: '#0000ff' },
   MAGENTA: { display: '#ff44ff', swatch: '#ff00ff' },
-  CYAN:    { display: '#00ffff', swatch: '#00ffff' },
-  BLANC:   { display: '#ffffff', swatch: '#ffffff' },
+  CYAN: { display: '#00ffff', swatch: '#00ffff' },
+  BLANC: { display: '#ffffff', swatch: '#ffffff' },
 }
 
 // ── Chapter + page data ────────────────────────────────────────
@@ -152,18 +152,32 @@ const CHAPTERS = [
             color: '#eeffee',
             holeColor: '#0a0a0a',
             rows: [
-              '                          ████                    ',
-              '                 █◉    ██████████                 ',
-              '             █    ███████████████████             ',
-              '          ██████████████████◉███████████          ',
-              '               ████████████████████████           ',
-              '                █████████████████████             ',
-              '                  ████████████████████            ',
-              '                  ██████████████████████          ',
-              '                 ████████████████████             ',
-              '                 █████████████████████            ',
-              '                █████████████████████████         ',
-              '                    ██ █████                      ',
+              '               ████                        ',
+              '          █   ██████████                   ',
+              '      █    ███████████████████             ',
+              '   ██████████████████████████████████████  ',
+              '      ██████████████████████████████       ',
+              '        ████████████████████████           ',
+              '         ████████████████████████          ',
+              '          █████████████████████            ',
+              '          ███████████████████████          ',
+              '           ██████████████████████          ',
+              '          ████████████████████             ',
+              '          █████████████████████            ',
+              '           █████████████████████           ',
+              '         █████████████████████████         ',
+              '             ██ █████                      ',
+              '                                           ',
+              '                                           ',
+              '                                           ',
+              '                      █             ',
+              '                     ██             ',
+              '                                           ',
+              '                                           ',
+              '                                           ',
+
+
+
             ],
           },
           '  ◉ SAINT-MALO  (1980)',
@@ -575,7 +589,7 @@ function PageContent({ page, isActive, onRestart }) {
   const intervalRef = useRef(null)
 
   // Date → Titre → Lignes — compteur unifie
-  const dateLength  = page.displayDate ? page.displayDate.length : 0
+  const dateLength = page.displayDate ? page.displayDate.length : 0
   const titleLength = page.title.length
 
   // Virtual length per line (empty lines = 1 so cursor flows through)
@@ -626,12 +640,12 @@ function PageContent({ page, isActive, onRestart }) {
   const allRevealed = revealedChars >= totalChars
 
   // Portion date
-  const dateCharsRevealed  = Math.min(revealedChars, dateLength)
-  const dateTyping         = revealedChars > 0 && revealedChars < dateLength
+  const dateCharsRevealed = Math.min(revealedChars, dateLength)
+  const dateTyping = revealedChars > 0 && revealedChars < dateLength
 
   // Portion titre (commence après la date)
   const titleCharsRevealed = Math.min(Math.max(0, revealedChars - dateLength), titleLength)
-  const titleTyping        = revealedChars > dateLength && revealedChars < dateLength + titleLength
+  const titleTyping = revealedChars > dateLength && revealedChars < dateLength + titleLength
 
   // Portion lignes (commence après la date + le titre)
   const linesCharsRevealed = Math.max(0, revealedChars - dateLength - titleLength)
@@ -666,11 +680,11 @@ function PageContent({ page, isActive, onRestart }) {
 
           const isEmpty = line === ''
           const isColorGrid = typeof line === 'object' && line.type === 'color-grid'
-          const isAsciiArt  = typeof line === 'object' && line.type === 'ascii-art'
+          const isAsciiArt = typeof line === 'object' && line.type === 'ascii-art'
 
           let content
           if (isAsciiArt) {
-            const artColor  = line.color || '#00FF41'
+            const artColor = line.color || '#00FF41'
             const holeColor = line.holeColor || '#000000'
             content = started ? (
               <pre
@@ -700,9 +714,9 @@ function PageContent({ page, isActive, onRestart }) {
             content = null
           } else {
             const PHASE_BG = { mono: '#0a0a0a', color: '#000080', modern: '#14120f', intro: '#000000' }
-            const holeCol  = PHASE_BG[page.phase] || '#000000'
+            const holeCol = PHASE_BG[page.phase] || '#000000'
             const displayed = line.slice(0, charsIn)
-            const parts     = displayed.split('◉')
+            const parts = displayed.split('◉')
             content = parts.length > 1 ? (
               <span>
                 {parts.map((part, pi) => (
@@ -757,8 +771,8 @@ function AllPagesOverlay({ chapters, currentChapterIdx, phase, onNavigate, onClo
           <button className="close-btn" onClick={onClose} aria-label="Fermer">
             {phase === 'modern' ? (
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             ) : 'X'}
           </button>
@@ -811,7 +825,7 @@ function CRTBoot({ onComplete }) {
 function App() {
   // ── Scène 3D intro ──────────────────────────────────────────
   const [showScene, setShowScene] = useState(true)
-  const [fadeOut, setFadeOut]   = useState(false)
+  const [fadeOut, setFadeOut] = useState(false)
   const [showBoot, setShowBoot] = useState(false)
 
   // ── Pagination dynamique selon la hauteur du viewport ────────
@@ -826,9 +840,9 @@ function App() {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  const chapters      = useMemo(() => autoPaginate(CHAPTERS, maxLines), [maxLines])
-  const flatPages     = useMemo(() => buildFlatPages(chapters), [chapters])
-  const chapterStart  = useMemo(() => chapters.map((_, i) => flatPages.findIndex(p => p.chapterIdx === i)), [chapters, flatPages])
+  const chapters = useMemo(() => autoPaginate(CHAPTERS, maxLines), [maxLines])
+  const flatPages = useMemo(() => buildFlatPages(chapters), [chapters])
+  const chapterStart = useMemo(() => chapters.map((_, i) => flatPages.findIndex(p => p.chapterIdx === i)), [chapters, flatPages])
   const modernFlatIdx = useMemo(() => flatPages.findIndex(p => p.phase === 'modern'), [flatPages])
 
   const [currentFlatIdx, setCurrentFlatIdx] = useState(0)
@@ -837,8 +851,8 @@ function App() {
   const scrollContainerRef = useRef(null)
   const crtOverlayRef = useRef(null)
 
-  const currentPage    = flatPages[currentFlatIdx]
-  const currentPhase   = currentPage?.phase ?? 'intro'
+  const currentPage = flatPages[currentFlatIdx]
+  const currentPhase = currentPage?.phase ?? 'intro'
   const currentChapterIdx = currentPage?.chapterIdx ?? 0
 
   // Applique le translateY sur le CRT overlay selon la position de scroll
