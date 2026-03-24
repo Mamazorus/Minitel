@@ -213,12 +213,10 @@ export default function MinitelScene({ onComplete, onNavigate, onStart, audioRef
           onClick={handleLandingClick}
         >
           <div className="scene-landing__content">
-            <p className="scene-landing__logo">MINISTORY</p>
-            <div className="scene-landing__separator" />
-            <p className="scene-landing__subtitle">Histoire du numérique français</p>
-            <p className="scene-landing__instruction">Cliquer puis scroller</p>
-            <p className="scene-landing__instruction">pour commencer l'expérience</p>
-            <p className="scene-landing__cta">[ ▶ COMMENCER ]</p>
+            <p className="scene-landing__logo">ministory</p>
+<p className="scene-landing__subtitle">Histoire du numérique français</p>
+            <p className="scene-landing__instruction">Cliquer puis scroller pour commencer</p>
+            <span className="scene-landing__cta">Commencer</span>
           </div>
         </div>
       )}
