@@ -151,9 +151,8 @@ export default function MinitelScene({ onComplete, onNavigate, onStart, audioRef
       // Phase 1 (0 → ORBIT_END) : orbite 360° autour du Minitel
       if (p <= ORBIT_END) {
         const t = easeInOut(p / ORBIT_END)
-        // Démarre en face (2*PI = 0), fait un tour complet, revient en face (0)
         const angle = lerp(Math.PI * 2, 0, t)
-        const camY  = lerp(2.5, 0.9, t)   // descend progressivement pendant l'orbite
+        const camY  = lerp(2.5, 0.9, t)   
         const lookY = lerp(0.2, 0.35, t)
 
         camera.position.set(Math.sin(angle) * RADIUS, camY, Math.cos(angle) * RADIUS)

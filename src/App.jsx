@@ -416,7 +416,7 @@ const CHAPTERS = [
           'Sa disparition marque moins une défaite technologique qu\'un choix de société. Le Web, ouvert et gratuit, l\'a emporté. Mais pendant trois décennies, le Minitel avait déjà inventé ce que le monde entier allait découvrir après lui.',
           '',
           '« Usagers et prestataires préféraient le laisser mourir en douceur… »',
-          '- Gonzalez & Jouve, Flux, 2002',
+          { type: 'link-line', text: '- Gonzalez & Jouve, Flux, 2002', url: 'https://shs.cairn.info/revue-flux1-2002-1-page-84' },
           '',
           '> FIN DE SESSION',
           '> CONNEXION TERMINEE_',
@@ -527,7 +527,7 @@ function TopNav({ chapterIdx, totalChapters, pageInChapter, totalPagesInChapter,
         )}
       </span>
       <button className="all-pages-btn" onClick={onShowAll}>
-        Toutes les pages
+        Tous les répertoires
       </button>
     </nav>
   )
@@ -596,6 +596,7 @@ function PageContent({ page, isActive, onRestart }) {
   const lineLengths = page.lines.map(l => {
     if (typeof l !== 'object') return l === '' ? 1 : l.length
     if (l.type === 'ascii-art') return l.rows.length
+    if (l.type === 'link-line') return l.text.length
     return 1 // color-grid
   })
   const totalLineChars = lineLengths.reduce((a, b) => a + b, 0)
@@ -681,6 +682,7 @@ function PageContent({ page, isActive, onRestart }) {
           const isEmpty = line === ''
           const isColorGrid = typeof line === 'object' && line.type === 'color-grid'
           const isAsciiArt = typeof line === 'object' && line.type === 'ascii-art'
+          const isLinkLine = typeof line === 'object' && line.type === 'link-line'
 
           let content
           if (isAsciiArt) {
@@ -710,6 +712,25 @@ function PageContent({ page, isActive, onRestart }) {
             ) : null
           } else if (isColorGrid) {
             content = started ? <ColorGridLine words={line.words} /> : null
+          } else if (isLinkLine) {
+            const displayed = line.text.slice(0, charsIn)
+            content = started ? (
+              <span>
+                {displayed}
+                {isCurrentLine && page.phase !== 'intro' && (
+                  <span className="cursor cursor--typing">█</span>
+                )}
+                {!isCurrentLine && charsIn >= line.text.length && (
+                  <a
+                    href={line.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="source-link"
+                    onClick={(e) => e.stopPropagation()}
+                  >Lire l'article original</a>
+                )}
+              </span>
+            ) : null
           } else if (isEmpty) {
             content = null
           } else {
